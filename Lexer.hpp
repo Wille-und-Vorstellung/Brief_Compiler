@@ -15,6 +15,8 @@ using std::vector;
  *	2. receive the input file in String
  *	3. output the token vector of input source code and the tokenTable
  *  4. another class "MatchTuple" to hold the temporay match result.
+ * notice:
+ *  1. sourceFileEntry() is recommended to avoid boundary hazard by directly using sourceFile[]
  */
 
 class MatchTuple;
