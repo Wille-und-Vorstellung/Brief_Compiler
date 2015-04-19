@@ -2,13 +2,16 @@
 #include"BriefCompiler.hpp"
 #define MAXIMUM_FILE_LENGTH 30
 
-
+//--------------------------Lex analysis part
 void BriefCompiler::activateCompiler( string fileName ){
 	//error-check
 	vector<char> inputString = readSource( fileName );
 	//error-check
 	TOKEN_SEQUENCE lexerResult;
 	lexerResult = activateLexer( inputString );
+	//error-check
+	OBJECT_CODE_SEQUENCE SSResult;
+	SSResult = activateSynSemantic( lexerResult );
 	//error-check
 	//...
 	return;
@@ -47,4 +50,17 @@ BriefCompiler::TOKEN_SEQUENCE BriefCompiler::activateLexer(vector<char> sourceSt
 	LexAnalyser.activate( sourceString );	
 	result = LexAnalyser.getResult();
 	return result;
+};
+//---------------------------syntax & semantic part below
+const BriefCompiler::OBJECT_CODE_SEQUENCE BriefCompiler::getObjectCode(){
+	return objectCode;
+};
+
+BriefCompiler::OBJECT_CODE_SEQUENCE BriefCompiler::activateSynSemantic( BriefCompiler::TOKEN_SEQUENCE inputTokenSequence ){
+	BriefCompiler::OBJECT_CODE_SEQUENCE temp;
+	SSAnalyser.activate( inputTokenSequence );
+	temp = SSAnalyser.getResult();
+	//error-check
+	objectCode = temp;
+	return objectCode;
 };

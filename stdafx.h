@@ -23,6 +23,8 @@
 #include"ListTuple.hpp"
 #include"Token.hpp"
 #include"Lexer.hpp"
+#include"SynSemantic.hpp"
+#include"Tuple4.hpp"
 
 using std::cin;
 using std::cout;

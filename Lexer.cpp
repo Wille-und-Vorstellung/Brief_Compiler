@@ -136,7 +136,8 @@ bool Lexer::matchIdentifier( MatchTuple &currentMatch ){
 
 	if ( isalpha( sourceFile[tempIndex] ) ){
 		while ( tempIndex + i < sourceFile.size() && 
-			isalpha( sourceFile[tempIndex+i]) || isdigit( sourceFile[tempIndex+i] ) ){
+			isalpha( sourceFile[tempIndex+i]) || isdigit( sourceFile[tempIndex+i] ) 
+			|| sourceFile[tempIndex+i] == '_' ){
 			i++;
 		}
 		//construct currentmatch
