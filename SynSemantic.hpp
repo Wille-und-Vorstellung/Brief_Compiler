@@ -24,7 +24,7 @@ public:
 	};
 private:
 	vector<Token> blockReader();
-	void dispatcher( vector<Token> );
+	long dispatcher( vector<Token> );
 	Token accessTokenSequence(long );
 
 	vector<Token> tokenSequence;

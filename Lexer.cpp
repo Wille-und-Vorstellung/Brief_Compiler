@@ -386,5 +386,10 @@ void Lexer::initiateLexicon(){
 	//tokenLexicon.push_back( Token( "\"", "", -1) );
 	//tokenLexicon.push_back( Token( ".", "", -1) );
 	//tokenLexicon.push_back( Token( "", "", -1) );
-
+	//newly added to the change in SynSemantic Analysis
+	tokenLexicon.push_back( Token( "endif", "ENDIF", -1) );
+	tokenLexicon.push_back( Token( "given", "GIVEN", -1) );
+	tokenLexicon.push_back( Token( "endgiven", "ENDGIVEN", -1) );
+	tokenLexicon.push_back( Token( "repeat", "REPEAT", -1) );
+	tokenLexicon.push_back( Token( "endrepeat", "ENDREPEAT", -1) );
 };

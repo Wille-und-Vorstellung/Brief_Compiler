@@ -86,8 +86,10 @@
     <ClInclude Include="Lexer.hpp" />
     <ClInclude Include="ListTuple.hpp" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="SynSemantic.hpp" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="Token.hpp" />
+    <ClInclude Include="Tuple4.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BriefCompiler.cpp" />
@@ -97,6 +99,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="SynSemantic.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
