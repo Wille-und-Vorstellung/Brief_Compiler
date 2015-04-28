@@ -85,6 +85,7 @@
     <ClInclude Include="BriefCompiler.hpp" />
     <ClInclude Include="Lexer.hpp" />
     <ClInclude Include="ListTuple.hpp" />
+    <ClInclude Include="LRItem.hpp" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="SynSemantic.hpp" />
     <ClInclude Include="targetver.h" />

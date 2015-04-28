@@ -25,6 +25,7 @@
 #include"Lexer.hpp"
 #include"SynSemantic.hpp"
 #include"Tuple4.hpp"
+#include"LRItem.hpp"
 
 using std::cin;
 using std::cout;

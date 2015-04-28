@@ -23,11 +23,39 @@ public:
 	~SynSemantic(){
 	};
 private:
+	//protagonists
+	/*
 	vector<Token> blockReader();
 	long dispatcher( vector<Token> );
+	void LRLocent();
+	void TPAnalysis_Branch();
+	void TPAnalysis_Loop();
+	*/
+	void LRAnalyser( Token );
+	void constructAugmentedGrammar();
+	void constructAnalysisTable();
+	void constructCanonicalCollection();
+	//auxilary
 	Token accessTokenSequence(long );
+	vector<Token> first( vector<Token> );
+	vector<LRItem> getClosure( vector<LRItem> );
+	vector<LRItem> gotoTransition( Token , vector<LRItem> );
+	
+	int transcribeTableIndex( Token );
+	void semanticActionDispatcher(long );
+
+	//debug
+	void showProducer();
+	void addReducedItem( LRItem );//called in LRanalyser when an LRItem is reduced.
+	void showAddressCode();
+
+	vector<LRItem> augmentedGrammar;
+	vector<vector<string>> actionTable, gotoTable;
+	vector<vector<Token>> canonicalCollection;
 
 	vector<Token> tokenSequence;
 	long blockReaderIndex;
 	vector<Tuple4> objectCode;
+
+	vector<LRItem> reducedLRItem;
 };
