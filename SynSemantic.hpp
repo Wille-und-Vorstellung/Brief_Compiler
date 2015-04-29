@@ -18,7 +18,7 @@ public:
 	const vector<Tuple4> getResult();
 	const Tuple4 gets(long );
 
-	SynSemantic(){
+	SynSemantic():readerIndex(-1), stakeIndex(-1){
 	};
 	~SynSemantic(){
 	};
@@ -31,31 +31,36 @@ private:
 	void TPAnalysis_Branch();
 	void TPAnalysis_Loop();
 	*/
-	void LRAnalyser( Token );
+	bool LRAnalyser( Token );
 	void constructAugmentedGrammar();
 	void constructAnalysisTable();
 	void constructCanonicalCollection();
-	//auxilary
+	
 	Token accessTokenSequence(long );
 	vector<Token> first( vector<Token> );
 	vector<LRItem> getClosure( vector<LRItem> );
 	vector<LRItem> gotoTransition( Token , vector<LRItem> );
 	
+	//auxilary
 	int transcribeTableIndex( Token );
 	void semanticActionDispatcher(long );
+	void showErrorRecord();
 
 	//debug
 	void showProducer();
 	void addReducedItem( LRItem );//called in LRanalyser when an LRItem is reduced.
 	void showAddressCode();
 
-	vector<LRItem> augmentedGrammar;
-	vector<vector<string>> actionTable, gotoTable;
+	vector<LRItem> augmentedGrammar;//sequence number of reducers stored here.
+	vector<vector<AnalysisTableItem>> actionTable, gotoTable;
 	vector<vector<Token>> canonicalCollection;
+	vector<LRStakeEntry> LRStake;
 
 	vector<Token> tokenSequence;
-	long blockReaderIndex;
-	vector<Tuple4> objectCode;
+	long readerIndex;//points to the current input token
+	long stakeIndex;//points to the top of LR stake
 
+	vector<Tuple4> objectCode;
 	vector<LRItem> reducedLRItem;
+	vector<long> errorRecord;
 };

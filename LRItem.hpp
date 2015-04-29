@@ -25,7 +25,7 @@ public:
 	Token leftSide;
 	vector<Token> rightSide;
 	Token lookAhead;
-	long semanticAction;
+	long semanticActionID;
 
 	friend bool operator== ( const LRItem & , const LRItem & );
 	friend bool operator!= ( const LRItem & , const LRItem &);
@@ -46,7 +46,7 @@ LRItem::LRItem( const LRItem& a ){
 	rightSide = a.rightSide;
 	dotPosition = a.dotPosition;
 	lookAhead = a.lookAhead;
-	semanticAction  = a.semanticAction;
+	semanticActionID  = a.semanticActionID;
 };
 
 bool operator== ( const LRItem& a, const LRItem& b ){
