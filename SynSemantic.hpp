@@ -34,7 +34,7 @@ private:
 	void TPAnalysis_Loop();
 	*/
 	bool LRAnalyser( Token );
-	string LRAnalyserAUX( vector<LRStakeEntry>&, long ,
+	string LRAnalyserAUX( vector<LRStakeEntry>&, long& ,
 		vector<vector<AnalysisTableItem>>&, 
 		vector<vector<AnalysisTableItem>>&, Token );//one single meta-analysis step
 	void constructAugmentedGrammar();
@@ -63,6 +63,9 @@ private:
 	bool isVisitedInFT(long);//if the coresponding semantic item of input ID has been visited
 	void initializeLRTC();//push S'->.S,# to the first cluster
 	Token newToken( string macro );
+	void setTerminator();
+	bool isInCCollection(vector<LRItem>);
+	long locateReducer(LRItem);
 
 
 	//debug
@@ -72,11 +75,11 @@ private:
 
 	vector<LRItem> augmentedGrammar;//sequence number of reducers stored here.
 	vector<vector<AnalysisTableItem>> actionTable, gotoTable;
-	vector<vector<Token>> canonicalCollection;
+	//vector<vector<Token>> canonicalCollection;
 	vector<LRStakeEntry> LRStake;
 
 	vector<Token> tokenSequence;
-	vector<string> accessRecord;//used in recursively constructing firstSet to avoid loop recursion
+	//vector<string> accessRecord;//used in recursively constructing firstSet to avoid loop recursion
 	long readerIndex;//points to the current input token
 	long stakeIndex;//points to the top of LR stake
 
@@ -98,5 +101,6 @@ private:
 	well you know what, I starts to thinks this program to be a little bit clumsy......
 	*/
 	vector<Token> semanticItemList;
-	vector<LRICluster> LRIC;
+	vector<Token> terminatorSet;
+	vector<LRICluster> canonicalCollection;
 };

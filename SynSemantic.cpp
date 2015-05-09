@@ -53,7 +53,6 @@ void SynSemantic::activate( vector<Token> lexerResult ){
 	constructCanonicalCollection();
 	constructAnalysisTable();
 	setSemanticItemList();
-	initializeLRTC();
 	//prepare the LR stake
 	LRStake.clear();
 	LRStakeEntry buttom;
@@ -118,7 +117,7 @@ bool SynSemantic::LRAnalyser( Token x ){/////////////
 	return false;
 };
 
-string SynSemantic::LRAnalyserAUX( vector<LRStakeEntry>& currentStake, long sIndex,
+string SynSemantic::LRAnalyserAUX( vector<LRStakeEntry>& currentStake, long& sIndex,
 								  vector<vector<AnalysisTableItem>>& actionT , 
 								vector<vector<AnalysisTableItem>>& gotoT, Token x){
 	bool reduceFlag = false;
@@ -156,16 +155,29 @@ string SynSemantic::LRAnalyserAUX( vector<LRStakeEntry>& currentStake, long sInd
 	vector<LRStakeEntry>* currentStake = &LRStake;
 	if ( !reduceFlag ) { //in stake
 		tempEntry.classMacro = x.classMarco;
-		tempEntry.state = tempTableItem.semanticActionID;
+		//tempEntry.state = tempTableItem.semanticActionID;//?????????????????????
+		tempEntry.state = tempTableItem.stateNumber;
 		currentStake.push_back(tempEntry);
+		sIndex++;
 	}
 	else if ( reduceFlag ) {//reduce
 		//stage one: pop stake
 		long reduceLength = augmentedGrammar[tempEntry.state].rightSide.size();
 		for (int i=0; i< reduceLength; i++){
 			currentStake.pop_back();//potential hazard here: stake goes empty before loop stops
+			sIndex--;
 		}
-		//stage two: push stake, wait until next iteration of LRAnalyserAUX
+		//stage two: record reducer and execute semantic function
+		reducedLRItem.push_back(augmentedGrammar[tempTableItem.semanticActionID]);
+		semanticActionDispatcher(tempTableItem.semanticActionID);
+		//stage three: push stake the left sid of the reducer
+		tempEntry.classMacro = augmentedGrammar[tempTableItem.semanticActionID].leftSide.classMarco;
+		row = currentStake[sIndex].state;
+		column = transcribeTableIndex(augmentedGrammar[tempTableItem.semanticActionID].leftSide);
+		tempEntry.state = gotoT[row][column].stateNumber;
+		currentStake.push_back(tempEntry);
+		sIndex++;
+
 		return "R";
 	}
 	return "S";
@@ -317,18 +329,140 @@ vector<LRItem> SynSemantic::getClosure( vector<LRItem> x){//waiting for sequenti
 	return x;
 };
 
-vector<LRItem> SynSemantic::gotoTransition( Token , vector<LRItem> ){//////////////
+vector<LRItem> SynSemantic::gotoTransition( Token x, vector<LRItem> y){//sequential inspection
+	vector<LRItem> result;
+	result.clear();
+
+	for (int i = 0; i < y.size(); i++){
+		if (y[i].dotPosition < y[i].rightSide.size() && 
+			y[i].rightSide[y[i].dotPosition].classMarco == x.classMarco){
+
+			y[i].dotPosition += 1;
+			result.push_back( y[i] );
+		}
+	}
+	return getClosure(result);
+};
+
+void SynSemantic::constructCanonicalCollection(){////sequential inspection
+	initializeLRTC();
+	vector<LRICluster> queue;
+	LRICluster tempC;
+	Token tempT;
+	vector<LRItem> tempLRIV;
+	vector<Token> VT;
+	LRICluster newC;
+	long counter = 0;
+
+	VT = joinSet( terminatorSet, semanticItemList );
+	queue.clear();
+	queue.push_back( canonicalCollection[0] );//push S'->.S, # into queue
+	while ( !queue.empty() ){
+		tempC = queue[0];
+		for (int i = 0; i < tempC.size(); i++){
+			for (int j = 0; j < VT.size(); j++){
+				tempT = VT[j];
+				tempLRIV = gotoTransition( tempT, tempC.LRIs );
+				if ( tempLRIV.size() != 0  && !isInCCollection( tempLRIV ) ){
+					//construct a new LRICluster and push into canonicalCollection
+					newC.ID = ++counter;
+					newC.LRIs = tempLRIV;
+					canonicalCollection.push_back(newC);
+					canonicalCollection[i].intrigers.push_back(tempT);
+					canonicalCollection[i].dest.push_back(newC.ID);
+					//push into queue also
+					queue.push_back(newC);
+				}
+			}
+		}
+		//pop the queue front
+		queue.erase(queue.begin());
+	}
 
 };
 
-void SynSemantic::constructCanonicalCollection(){//////////////////////////////////
-	
+void SynSemantic::constructAnalysisTable(){////////////////////////////////////////int transcribeTableIndex( Token );
+	AnalysisTableItem tempATI;
+	Token targetTerminator, targetSI;
+	LRICluster currentCC;
+	long column, row;
+	//prepare the actiontable and gototable
+	//...........
+
+	for (int i = 0; i < canonicalCollection.size(); i++){
+		currentCC = canonicalCollection[i];
+		//fill actionTable(trans with terminator)
+		for (int j = 0; j < terminatorSet.size(); j++){
+			targetTerminator = terminatorSet[j];
+			for (int p = 0; p < currentCC.size(); p++){
+				if (currentCC.intrigers[p].classMarco == targetTerminator.classMarco){//got one trans
+					row = i;
+					column = transcribeTableIndex(targetTerminator);
+					actionTable[row][column].actionType = "S";
+					actionTable[row][column].stateNumber = currentCC.dest[p];
+				}
+			}
+		}
+		//fill actionTable(deal with reducables and ACC)
+		for (int q = 0; q < currentCC.size();q++){
+
+			if (currentCC.get(q).dotPosition == currentCC.get(q).rightSide.size()){//find one reducable
+				row = i;
+				column = transcribeTableIndex( currentCC.get(q).lookAhead );
+				/*no need for exceptions on ACC I guess...
+				if (currentCC.get(q).leftSide.classMarco == "S'" && 
+					currentCC.get(q).rightSide.size() == 1 &&
+					currentCC.get(q).rightSide[0].classMarco == "S" &&
+					currentCC.get(q).dotPosition == 1 &&
+					currentCC.get(q).lookAhead.classMarco == "#"){//the ACC
+				}
+				else */
+					actionTable[row][column].actionType = "R";
+					actionTable[row][column].semanticActionID = locateReducer(currentCC.get(q));
+				
+			}
+		}
+		//fill gotoTable 
+		for (int k = 0; k < semanticItemList.size(); k++){
+			targetSI = semanticItemList[k];
+			for (int p = 0; p < currentCC.size(); p++){
+				if (currentCC.intrigers[p].classMarco == targetSI.classMarco){//got one trans
+					row = i;
+					column = transcribeTableIndex(targetSI);;
+					gotoTable[row][column].actionType = "S";
+					gotoTable[row][column].stateNumber = currentCC.dest[p];
+				}
+			}
+		}
+
+	}
+
 };
 
-void SynSemantic::constructAnalysisTable(){////////////////////////////////////////
-
-};
 //-----------------------the costars
+long SynSemantic::locateReducer(LRItem a){
+	LRItem temp;
+	int j = 0;
+	for (int i = 0; i < augmentedGrammar.size(); i++){
+		if (temp == augmentedGrammar[i] &&
+			temp.leftSide.classMarco == a.leftSide.classMarco &&
+			temp.rightSide.size() == a.rightSide.size() &&
+			temp.lookAhead.classMarco == a.lookAhead.classMarco){
+			for ( j = 0; j < temp.rightSide.size(); j++){
+				if (temp.rightSide[j].classMarco != a.rightSide[j].classMarco){
+					break;
+				}
+			}
+
+			if (j == temp.rightSide.size()){
+				return i;
+			}
+		}
+	}
+	cerr << "NOT FOUND in locateReducer :" << a.leftSide.classMarco << endl;
+	return 0;
+}
+
 bool SynSemantic::containVOID( vector<Token> x ){
 	vector<Token>::iterator i;
 	for ( i =  x.begin(); i != x.end(); i++){
@@ -405,6 +539,7 @@ void SynSemantic::initializeLRTC(){
 	LRItem temp;
 	Token tempT;
 	LRICluster tempC;
+	canonicalCollection.clear();
 
 	tempT.classMarco = "#";
 	temp.dotPosition = 0;
@@ -416,6 +551,8 @@ void SynSemantic::initializeLRTC(){
 
 	tempC.ID = 0;
 	tempC.pushBack( temp );
+
+	canonicalCollection.push_back(tempC);
 };
 
 Token SynSemantic::newToken( string macro ){
@@ -424,31 +561,63 @@ Token SynSemantic::newToken( string macro ){
 	return temp;
 };
 
-//-----------------------basic configurations (manual specified or read from files)
-bool SynSemantic::isTerminator( Token a ){/////////////////////////////////////////
-	
+
+bool SynSemantic::isInCCollection(vector<LRItem> x){
+	int j = 0;
+	for (int i = 0; i < canonicalCollection.size(); i++){
+		if (x.size() != canonicalCollection[i].size())
+			continue;
+		for ( j = 0; j < canonicalCollection[i].size(); j++){
+			if (x[i] != canonicalCollection[i].get(j)){
+				break;
+			}
+		}
+		if (j == canonicalCollection[i].size()){
+			return true;
+		}
+
+	}
+	return false;
 };
 
-int SynSemantic::transcribeTableIndex( Token ){////////////////////////////////////
+bool SynSemantic::isTerminator(Token a){/////////////////////////////////////////
 
+};
+
+int SynSemantic::transcribeTableIndex(Token){////////////////////////////////////
+	//terminator
+
+
+	//non-terminator
 
 	//if is illegal token, return -1, cerr<< "...." <<endl;
 
 };
 
+//-----------------------basic configurations (manual specified or read from files)
 void SynSemantic::constructAugmentedGrammar(){/////////////////////////////////////
 
 
 };
 
-void SynSemantic::semanticActionDispatcher( long actionID ){///////////////////////
+void SynSemantic::setSemanticItemList(){///////////////////////////////////////////
+	//insert all semantic items into semanticItemList vector
+	//unfortunately, it has to done manually....
+
+};
+
+void SynSemantic::setTerminator(){////////////////////////////////////////////////
+
+}
+
+void SynSemantic::semanticActionDispatcher(long actionID){///////////////////////
 	//range check
-	if ( actionID < 0 ){
+	if (actionID < 0){
 		cerr << "invalid actionID detected in semanticActionDispatcher." << endl;
 		return;
 	}
 	//dispatch semantic action
-	switch ( actionID ){
+	switch (actionID){
 	case 0:
 		break;
 	case 1:
@@ -457,17 +626,9 @@ void SynSemantic::semanticActionDispatcher( long actionID ){////////////////////
 
 
 	default:
-			break;
+		break;
 	}
 };
-
-
-void SynSemantic::setSemanticItemList(){
-	//insert all semantic items into semanticItemList vector
-	//unfortunately, it has to done manually....
-
-};
-
 //-----------------------for debug usage only
 void SynSemantic::showProducer(){
 	cout << " all reduced producers shown below " << endl;
