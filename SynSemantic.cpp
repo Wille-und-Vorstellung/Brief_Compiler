@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "SynSemantic.hpp"
+#include "LRICluster.hpp"
 
 SynSemantic::SynSemantic():readerIndex(0){
 	augmentedGrammar.clear();
@@ -52,6 +53,7 @@ void SynSemantic::activate( vector<Token> lexerResult ){
 	constructCanonicalCollection();
 	constructAnalysisTable();
 	setSemanticItemList();
+	initializeLRTC();
 	//prepare the LR stake
 	LRStake.clear();
 	LRStakeEntry buttom;
@@ -210,7 +212,7 @@ vector<Token> SynSemantic::first( vector<Token> x ){
 	return firstSet;
 };
 
-vector<Token> SynSemantic::firstAUX( Token x ){////////////////////////////////////
+vector<Token> SynSemantic::firstAUX( Token x ){////waiting for sequential inspection
 	vector<Token> firstSetTemp;
 	firstSetTemp.clear();
 	bool extensionFlag;
@@ -254,17 +256,76 @@ vector<Token> SynSemantic::firstAUX( Token x ){/////////////////////////////////
 	}
 };
 
-vector<LRItem> SynSemantic::getClosure( vector<LRItem> ){//////////////////////////
+vector<LRItem> SynSemantic::getClosure( vector<LRItem> x){//waiting for sequential inspection
+	int j = 0; 
+	Token targetT;
+	Token tempT;
+	LRItem targetLRI;
+	LRItem tempLRI;
+	vector<LRItem> queue;
+	vector<Token> tempFS;
+	bool matchFlag;
+	queue.clear();
+	for (int i = 0; i < x.size();i++){
+		if ( x[i].dotPosition <= x[i].rightSide.size()-1 ){
+			//i.e. those producers that is of this form "A->B.CD, x", in which CD is not void
+			//i.e. the dot is not in the last
+			queue.push_back( x[i] );
+		}
+	}
+	while ( !queue.empty() ){
+		targetLRI = queue[0];
+		targetT = targetLRI.rightSide[targetLRI.dotPosition];
+		//get lookahead chars by First(CDx)
+		tempFS.clear();
+		for (int m = targetLRI.dotPosition; m < targetLRI.rightSide.size(); m++){
+			tempFS.push_back(targetLRI.rightSide[m]);
+		}
+		tempFS.push_back(targetLRI.lookAhead);
+		tempFS = first(tempFS);
+
+		for (j = 0; j < augmentedGrammar.size(); j++){
+			if (augmentedGrammar[j].leftSide.classMarco == targetT.classMarco){
+				for (int k = 0; k < tempFS.size(); k++){
+					tempT.classMarco = tempFS[k].classMarco;
+					//search matching in x
+					matchFlag = false;
+					tempLRI = augmentedGrammar[j];//may cause problem due to the lack of operatot = for LRItem
+					tempLRI.dotPosition = 0;
+					tempLRI.lookAhead = tempT;
+					for (int p = 0; p < x.size(); p++){
+						if ( x[p] == tempLRI ){
+							matchFlag = true;
+							break;
+						}
+					}
+					
+					if ( matchFlag = false ){
+						//construct new LRItem and push to x 
+						x.push_back(tempLRI);
+						//push to queue if qualified
+						if (tempLRI.dotPosition <= tempLRI.rightSide.size() - 1){
+							queue.push_back(tempLRI);
+						}
+					}
+				}
+			}
+		}
+		//pop the front of queue
+		queue.erase( queue.begin() );//?
+	}
+	return x;
 };
 
 vector<LRItem> SynSemantic::gotoTransition( Token , vector<LRItem> ){//////////////
-};
-
-void SynSemantic::constructAnalysisTable(){////////////////////////////////////////
 
 };
 
 void SynSemantic::constructCanonicalCollection(){//////////////////////////////////
+	
+};
+
+void SynSemantic::constructAnalysisTable(){////////////////////////////////////////
 
 };
 //-----------------------the costars
@@ -338,6 +399,29 @@ bool SynSemantic::isVisitedInFT( long i){
 		return true;
 	}
 	bool temp = ( firstSetTrail[i] == 1 ) ? true : false;
+};
+
+void SynSemantic::initializeLRTC(){
+	LRItem temp;
+	Token tempT;
+	LRICluster tempC;
+
+	tempT.classMarco = "#";
+	temp.dotPosition = 0;
+	temp.lookAhead = tempT;
+	tempT.classMarco = "S'";
+	temp.leftSide = tempT;
+	tempT.classMarco = "S";
+	temp.rightSide.push_back( tempT );
+
+	tempC.ID = 0;
+	tempC.pushBack( temp );
+};
+
+Token SynSemantic::newToken( string macro ){
+	Token temp;
+	temp.classMarco = macro;
+	return temp;
 };
 
 //-----------------------basic configurations (manual specified or read from files)

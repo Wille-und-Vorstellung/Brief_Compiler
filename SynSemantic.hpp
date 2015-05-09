@@ -61,6 +61,9 @@ private:
 	void clearFirstTrail();
 	long indexInSIL( Token );//index in semanticItemList, which is the ID of input semantic item
 	bool isVisitedInFT(long);//if the coresponding semantic item of input ID has been visited
+	void initializeLRTC();//push S'->.S,# to the first cluster
+	Token newToken( string macro );
+
 
 	//debug
 	void showProducer();
@@ -95,4 +98,5 @@ private:
 	well you know what, I starts to thinks this program to be a little bit clumsy......
 	*/
 	vector<Token> semanticItemList;
+	vector<LRICluster> LRIC;
 };

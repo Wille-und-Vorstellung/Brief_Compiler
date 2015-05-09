@@ -28,6 +28,7 @@
 #include"LRItem.hpp"
 #include"AnalysisTableItem.hpp"
 #include"LRStakeEntry.hpp"
+#include"LRICluster.hpp"
 
 using std::cin;
 using std::cout;
