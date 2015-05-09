@@ -51,6 +51,7 @@ void SynSemantic::activate( vector<Token> lexerResult ){
 	constructAugmentedGrammar();
 	constructCanonicalCollection();
 	constructAnalysisTable();
+	setSemanticItemList();
 	//prepare the LR stake
 	LRStake.clear();
 	LRStakeEntry buttom;
@@ -92,22 +93,47 @@ void SynSemantic::activate( vector<Token> lexerResult ){
 	return;
 };
 //------------------------our protagonists 
-bool SynSemantic::LRAnalyser( Token x ){/////////////////////////////////////////////
+bool SynSemantic::LRAnalyser( Token x ){/////////////
+	//choose coresponding analysis table and stake
+	//...
+	string actionFlag;
+	do{
+		actionFlag = LRAnalyserAUX( LRStake, stakeIndex, actionTable, gotoTable, x );
+		if ( actionFlag == "S" ){
+			break;
+		}
+		else if ( actionFlag == "R" ) {//needs to continue until returns R or ACC
+			continue;
+		}
+		else if ( actionFlag == "ACC" ){
+			cout << "LR(1) analysis finished." << endl;
+			return true;
+		}
+		else if ( actionFlag == "ERROR" ){
+			break;
+		}
+	}while( actionFlag == "R" );
+	return false;
+};
+
+string SynSemantic::LRAnalyserAUX( vector<LRStakeEntry>& currentStake, long sIndex,
+								  vector<vector<AnalysisTableItem>>& actionT , 
+								vector<vector<AnalysisTableItem>>& gotoT, Token x){
 	bool reduceFlag = false;
 
 	long row =0, column =0;
-	row = LRStake[stakeIndex].state;
+	row = currentStake[sIndex].state;
 	column = transcribeTableIndex( x );
 	if ( column == -1 ){//error check point
 		cerr 
-			<<" illegal token( "<< x.classMarco<< " )detected in LRAnalyser. "
+			<<" illegal token( "<< x.classMarco<< " )detected in LRAnalyserAUX. "
 			<<" illegal token ignored, analysis proceding." <<	
 		endl;
-		return false;
+		return "ERROR";
 	}
 
 	AnalysisTableItem tempTableItem;
-	tempTableItem = actionTable[row][column];
+	tempTableItem = actionT[row][column];
 	if ( tempTableItem.actionType == "S" ) {
 		reduceFlag = false;
 	}
@@ -115,14 +141,13 @@ bool SynSemantic::LRAnalyser( Token x ){////////////////////////////////////////
 		reduceFlag = true;
 	}
 	else if ( tempTableItem.actionType == "ACC" ){
-		cout << "LR(1) analysis finished." << endl;
-		return true;
+		return "ACC";
 	}
 	else{//error in syntax occured
 		//counter-mmeasure: ignore current input token
 		//record this error
 		errorRecord.push_back(readerIndex);
-		return;
+		return "ERROR";
 	}
 
 	LRStakeEntry tempEntry;
@@ -130,30 +155,103 @@ bool SynSemantic::LRAnalyser( Token x ){////////////////////////////////////////
 	if ( !reduceFlag ) { //in stake
 		tempEntry.classMacro = x.classMarco;
 		tempEntry.state = tempTableItem.semanticActionID;
-		currentStake->push_back(tempEntry);
+		currentStake.push_back(tempEntry);
 	}
 	else if ( reduceFlag ) {//reduce
 		//stage one: pop stake
 		long reduceLength = augmentedGrammar[tempEntry.state].rightSide.size();
 		for (int i=0; i< reduceLength; i++){
-			currentStake->pop_back();//potential hazard here
+			currentStake.pop_back();//potential hazard here: stake goes empty before loop stops
 		}
-		//stage two: push stake
-		while (){
-
-		}
+		//stage two: push stake, wait until next iteration of LRAnalyserAUX
+		return "R";
 	}
-	return false;
+	return "S";
 };
 
-void SynSemantic::constructAnalysisTable(){////////////////////////////////////////
+vector<Token> SynSemantic::first( vector<Token> x ){
+	vector<Token> firstSet;
+	vector<Token> temp;
+	firstSet.clear();
+	if ( x.size() == 0 ){
+		return ;
+	}
+	clearFirstTrail();//necessary before calling firstAUX
+	firstSet = firstAUX( x[0] );
+	bool voidFlag = containVOID( firstSet );
+	if ( !voidFlag ){//find no VOID
+		return firstSet;
+	}
+	else if( voidFlag && x.size() > 1) {
+		//delete VOID in firstSet
+		firstSet = eraseVOID( firstSet );
+		clearFirstTrail();//necessary before calling firstAUX
+		temp = eraseVOID( firstAUX( x[1] ) );
+		firstSet = joinSet( firstSet, temp );
+		int i;
+		for (  i=1; i<x.size()-1; i++ ){
+			temp = firstAUX( x[i] );
+			if ( containVOID( temp ) ){
+				clearFirstTrail();//necessary before calling firstAUX
+				temp = eraseVOID( firstAUX( x[i+1] ) );
+				firstSet = joinSet( firstSet, temp );
+			}
+		}
+		clearFirstTrail();//necessary before calling firstAUX
+		if ( i == x.size()-1 && containVOID( firstAUX( x[i] ) ) ){
+			Token voidToken;
+			voidToken.classMarco = "VOID";
+			firstSet.push_back( voidToken );
+		}
 
+	}
+	else;
+		
+	return firstSet;
 };
 
-void SynSemantic::constructCanonicalCollection(){//////////////////////////////////
-};
-
-vector<Token> SynSemantic::first( vector<Token> ){/////////////////////////////////
+vector<Token> SynSemantic::firstAUX( Token x ){////////////////////////////////////
+	vector<Token> firstSetTemp;
+	firstSetTemp.clear();
+	bool extensionFlag;
+	if ( isTerminator(x) ){
+		firstSetTemp.push_back(x);
+		return firstSetTemp;
+	}
+	//check if in this cycle the input has been visited
+	long tempIndex = indexInSIL(x);
+	if (isVisitedInFT(tempIndex)){
+		return firstSet[tempIndex];
+	}
+	else {//A non-terminator
+		//find coresponding producers of given semantic item in augmentedGrammar
+		firstSetTrail[tempIndex] = 1;
+		vector<Token> temp, buffer;
+		LRItem temp_1;
+		int j = 0;
+		for (int i=0; i < augmentedGrammar.size(); i++) {
+			temp_1 = augmentedGrammar[i];
+			if (  temp_1.leftSide.classMarco == x.classMarco ){
+				buffer.clear();
+				for (j = 0; j < temp_1.rightSide.size(); j++){
+					if (temp_1.rightSide[j].classMarco != "VOID"){
+						temp = firstAUX( temp_1.rightSide[j] );
+						buffer = joinSet(buffer, temp);
+						if (containVOID(temp)){
+							continue;
+						}
+						break;
+					}
+				}
+				if (j != temp_1.rightSide.size()){//first set of token x do not contain void
+					buffer = eraseVOID(buffer);
+				}
+				firstSetTemp = joinSet(firstSetTemp, buffer);
+			}
+		}
+		firstSet[tempIndex] = joinSet(firstSet[tempIndex], firstSetTemp);
+		return firstSet[tempIndex];
+	}
 };
 
 vector<LRItem> SynSemantic::getClosure( vector<LRItem> ){//////////////////////////
@@ -162,15 +260,101 @@ vector<LRItem> SynSemantic::getClosure( vector<LRItem> ){///////////////////////
 vector<LRItem> SynSemantic::gotoTransition( Token , vector<LRItem> ){//////////////
 };
 
+void SynSemantic::constructAnalysisTable(){////////////////////////////////////////
+
+};
+
+void SynSemantic::constructCanonicalCollection(){//////////////////////////////////
+
+};
+//-----------------------the costars
+bool SynSemantic::containVOID( vector<Token> x ){
+	vector<Token>::iterator i;
+	for ( i =  x.begin(); i != x.end(); i++){
+		if ( i->classMarco == "VOID" ){
+			return true;
+		}
+	}
+	return false;
+};
+
+vector<Token> SynSemantic::joinSet( vector<Token>& a , vector<Token>& b ){
+	vector<Token> joined;
+	joined.clear();
+	vector<Token>::iterator i;
+	for (i = a.begin(); i != a.end(); i++){
+		joined.push_back( (*i) );
+	}
+	for ( i= b.begin(); i != b.end(); i++ ){
+		joined.push_back( (*i) );
+	}
+	return joined;
+};
+
+vector<Token> SynSemantic::eraseVOID( vector<Token> a ){
+	vector<Token>::iterator temp;
+	bool voidFlag = containVOID( a );
+	if ( voidFlag ){
+		return a;
+	}
+	for ( temp = a.begin(); temp != a.end();){
+		if ( temp->classMarco == "VOID" ){
+			temp = a.erase(temp);
+		}
+		else
+			temp++;
+	}
+}
+
+void SynSemantic::prepareFirstSetRelated(){
+	for (int i = 0; i < SEMANTIC_ITEM_N; i++){
+		firstSet[i].clear();
+	}
+	clearFirstTrail();
+}
+
+void SynSemantic::clearFirstTrail(){
+	for (int i = 0; i < SEMANTIC_ITEM_N; i++) {
+		firstSetTrail[i] = 0;
+	}
+	return;
+}
+
+long SynSemantic::indexInSIL(Token x){
+	for (int i = 0; i < semanticItemList.size(); i++){
+		if (semanticItemList[i].classMarco == x.classMarco){
+			return i;
+		}
+	}
+	//not found
+	cerr << "WARNING: Token not found in indexInSIL" << endl;
+	return 0;
+};
+
+bool SynSemantic::isVisitedInFT( long i){
+	//boundary check
+	if ( i<0 || i>SEMANTIC_ITEM_N-1 ){
+		cerr << "ERROR: index out of range in isVisitedInFT" << endl;
+		return true;
+	}
+	bool temp = ( firstSetTrail[i] == 1 ) ? true : false;
+};
 
 //-----------------------basic configurations (manual specified or read from files)
+bool SynSemantic::isTerminator( Token a ){/////////////////////////////////////////
+	
+};
+
 int SynSemantic::transcribeTableIndex( Token ){////////////////////////////////////
 
 
-	//if is illegal token, return -1, cerr<<"...."<<endl;
+	//if is illegal token, return -1, cerr<< "...." <<endl;
+
 };
 
 void SynSemantic::constructAugmentedGrammar(){/////////////////////////////////////
+
+
 };
 
 void SynSemantic::semanticActionDispatcher( long actionID ){///////////////////////
@@ -191,6 +375,13 @@ void SynSemantic::semanticActionDispatcher( long actionID ){////////////////////
 	default:
 			break;
 	}
+};
+
+
+void SynSemantic::setSemanticItemList(){
+	//insert all semantic items into semanticItemList vector
+	//unfortunately, it has to done manually....
+
 };
 
 //-----------------------for debug usage only
