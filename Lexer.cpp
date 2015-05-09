@@ -136,7 +136,8 @@ bool Lexer::matchIdentifier( MatchTuple &currentMatch ){
 
 	if ( isalpha( sourceFile[tempIndex] ) ){
 		while ( tempIndex + i < sourceFile.size() && 
-			isalpha( sourceFile[tempIndex+i]) || isdigit( sourceFile[tempIndex+i] ) ){
+			isalpha( sourceFile[tempIndex+i]) || isdigit( sourceFile[tempIndex+i] ) 
+			|| sourceFile[tempIndex+i] == '_' ){
 			i++;
 		}
 		//construct currentmatch
@@ -385,5 +386,10 @@ void Lexer::initiateLexicon(){
 	//tokenLexicon.push_back( Token( "\"", "", -1) );
 	//tokenLexicon.push_back( Token( ".", "", -1) );
 	//tokenLexicon.push_back( Token( "", "", -1) );
-
+	//newly added to the change in SynSemantic Analysis
+	tokenLexicon.push_back( Token( "endif", "ENDIF", -1) );
+	tokenLexicon.push_back( Token( "given", "GIVEN", -1) );
+	tokenLexicon.push_back( Token( "endgiven", "ENDGIVEN", -1) );
+	tokenLexicon.push_back( Token( "repeat", "REPEAT", -1) );
+	tokenLexicon.push_back( Token( "endrepeat", "ENDREPEAT", -1) );
 };

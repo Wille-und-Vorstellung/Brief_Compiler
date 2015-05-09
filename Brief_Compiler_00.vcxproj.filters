@@ -36,6 +36,21 @@
     <ClInclude Include="Token.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="SynSemantic.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Tuple4.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="LRItem.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="AnalysisTableItem.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="LRStakeEntry.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -48,6 +63,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="SynSemantic.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

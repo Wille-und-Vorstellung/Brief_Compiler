@@ -15,6 +15,8 @@ public:
 	string classMarco;
 	long tableIndex;
 
+	Token& operator= ( const Token& );
+
 	Token():tableIndex(-1){
 	};
 	Token(string at, string cl, long ta):tableIndex(-1){
@@ -31,4 +33,13 @@ public:
 	};
 private:
 
+};
+
+
+//implements
+Token& Token::operator= ( const Token & a ){
+	attribute = a.attribute;
+	classMarco = a.classMarco;
+	tableIndex = a.tableIndex;
+	return *this;
 };
