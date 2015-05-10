@@ -2,18 +2,7 @@
 #include "SynSemantic.hpp"
 #include "LRICluster.hpp"
 
-SynSemantic::SynSemantic():readerIndex(0){
-	augmentedGrammar.clear();
-	actionTable.clear();
-	gotoTable.clear();
-	canonicalCollection.clear();
-	tokenSequence.clear();
-	objectCode.clear();
-	reducedLRItem.clear();
-	LRStake.clear();
-	errorRecord.clear();
-};
-
+//#define TRANSCRIBE_OFFSET 100
 const vector<Tuple4> SynSemantic::getResult(){
 	return objectCode;
 };
@@ -49,10 +38,12 @@ void SynSemantic::showErrorRecord(){
 void SynSemantic::activate( vector<Token> lexerResult ){
 	tokenSequence = lexerResult;
 	//preprocess: prepare the LR(1) canonical collection and ananlysis table
+	setSemanticItemList();
+	setTerminator();
 	constructAugmentedGrammar();
 	constructCanonicalCollection();
 	constructAnalysisTable();
-	setSemanticItemList();
+
 	//prepare the LR stake
 	LRStake.clear();
 	LRStakeEntry buttom;
@@ -383,12 +374,34 @@ void SynSemantic::constructCanonicalCollection(){////sequential inspection
 
 void SynSemantic::constructAnalysisTable(){////////////////////////////////////////int transcribeTableIndex( Token );
 	AnalysisTableItem tempATI;
+	vector<AnalysisTableItem> tempColumn;
 	Token targetTerminator, targetSI;
 	LRICluster currentCC;
 	long column, row;
-	//prepare the actiontable and gototable
-	//...........
+	//allocate the actiontable and gototable
+	//canonicalCollection.size() X terminatorSet.size() for actionTable
+	actionTable.clear();
+	tempColumn.clear();
+	for (int j = 0; j < terminatorSet.size(); j++){
+		tempColumn.push_back(tempATI);
+	}
+	
+	for (int i = 0; i < canonicalCollection.size(); i++){
+		actionTable.push_back(tempColumn);
+		
+	}
+	//canonicalCollection.size() X semanticItemList.size() for gotoTable
+	gotoTable.clear();
+	tempColumn.clear();
+	for (int k = 0; k < semanticItemList.size(); k++){
+		tempColumn.push_back(tempATI);
+	}
+	for (int i = 0; i < canonicalCollection.size(); i++){
+		gotoTable.push_back(tempColumn);
 
+	}
+
+	//construct the tables
 	for (int i = 0; i < canonicalCollection.size(); i++){
 		currentCC = canonicalCollection[i];
 		//fill actionTable(trans with terminator)
@@ -580,34 +593,48 @@ bool SynSemantic::isInCCollection(vector<LRItem> x){
 	return false;
 };
 
-bool SynSemantic::isTerminator(Token a){/////////////////////////////////////////
-
+bool SynSemantic::isTerminator(Token a){
+	for (int i = 0; i < terminatorSet.size(); i++){
+		if (terminatorSet[i].classMarco == a.classMarco){
+			return true;
+		}
+	}
+	return false;
 };
 
-int SynSemantic::transcribeTableIndex(Token){////////////////////////////////////
+int SynSemantic::transcribeTableIndex(Token x){
 	//terminator
-
-
-	//non-terminator
-
-	//if is illegal token, return -1, cerr<< "...." <<endl;
-
+	for (int i = 0; i < terminatorSet.size(); i++){
+		if ( x.classMarco == terminatorSet[i].classMarco ){
+			return i;
+		}
+	}
+	//non-terminator(i.e. semantic item)
+	for (int j = 0; j < semanticItemList.size(); j++){
+		if ( x.classMarco == semanticItemList[j].classMarco ){
+			return j;
+		}
+	}
+	//if is illegal token, return 0, cerr<< "...." <<endl;
+	cerr << "ERROR: illegal token detected in transcribeTableIndex " << x.classMarco << endl;
+	return 0;
 };
 
 //-----------------------basic configurations (manual specified or read from files)
 void SynSemantic::constructAugmentedGrammar(){/////////////////////////////////////
-
+	augmentedGrammar.clear();
 
 };
 
 void SynSemantic::setSemanticItemList(){///////////////////////////////////////////
 	//insert all semantic items into semanticItemList vector
 	//unfortunately, it has to done manually....
+	semanticItemList.clear();
 
 };
 
 void SynSemantic::setTerminator(){////////////////////////////////////////////////
-
+	terminatorSet.clear();
 }
 
 void SynSemantic::semanticActionDispatcher(long actionID){///////////////////////
