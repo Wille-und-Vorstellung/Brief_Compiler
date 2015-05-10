@@ -41,8 +41,8 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>G:\程序\Open CV 2.4.6.0\opencv\build\include;G:\程序\Open CV 2.4.6.0\opencv\build\include\opencv;G:\程序\Open CV 2.4.6.0\opencv\build\include\opencv2;$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSDK_IncludePath)</IncludePath>
-    <LibraryPath>G:\程序\Open CV 2.4.6.0\opencv\build\x86\vc11\lib;G:\程序\Open CV 2.4.6.0\opencv\build\x86\vc11\staticlib;$(VCInstallDir)lib;$(VCInstallDir)atlmfc\lib;$(WindowsSDK_LibraryPath_x86)</LibraryPath>
+    <IncludePath>F:\OPENCV\opencv\build\include;F:\OPENCV\opencv\build\include\opencv;F:\OPENCV\opencv\build\include\opencv2;$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSDK_IncludePath)</IncludePath>
+    <LibraryPath>F:\OPENCV\opencv\build\x86\vc11\lib;F:\OPENCV\opencv\build\x86\vc11\staticlib;$(VCInstallDir)lib;$(VCInstallDir)atlmfc\lib;$(WindowsSDK_LibraryPath_x86)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -86,6 +86,7 @@
     <ClInclude Include="BriefCompiler.hpp" />
     <ClInclude Include="Lexer.hpp" />
     <ClInclude Include="ListTuple.hpp" />
+    <ClInclude Include="LRICluster.hpp" />
     <ClInclude Include="LRItem.hpp" />
     <ClInclude Include="LRStakeEntry.hpp" />
     <ClInclude Include="stdafx.h" />
@@ -97,12 +98,16 @@
   <ItemGroup>
     <ClCompile Include="BriefCompiler.cpp" />
     <ClCompile Include="Lexer.cpp" />
+    <ClCompile Include="LRICluster.cpp" />
+    <ClCompile Include="LRItem.cpp" />
+    <ClCompile Include="LRStakeEntry.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="SynSemantic.cpp" />
+    <ClCompile Include="Token.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

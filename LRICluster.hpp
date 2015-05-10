@@ -1,7 +1,9 @@
+#pragma once
 #include "stdafx.h"
 #include <iostream>
 #include <vector>
 #include <string>
+#include "LRItem.hpp"
 
 using std::vector;
 using std::string;
@@ -34,13 +36,13 @@ public:
 		intrigers.clear();
 		dest.clear();
 	};
-	LRICluster( LRICluster& );
+	LRICluster( const LRICluster& );
 	~LRICluster(){};
 private:
 
 };
 
-LRICluster::LRICluster(LRICluster& a){
+LRICluster::LRICluster(const LRICluster& a){
 	ID = a.ID;
 	LRIs = a.LRIs;
 	intrigers = a.intrigers;

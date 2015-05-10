@@ -1,3 +1,4 @@
+#pragma once
 #include "stdafx.h"
 #include <iostream>
 #include <vector>
@@ -29,8 +30,4 @@ private:
 
 };
 
-//implements
-LRStakeEntry::LRStakeEntry( const LRStakeEntry& a ){
-	classMacro = a.classMacro;
-	state = a.state;
-};
+

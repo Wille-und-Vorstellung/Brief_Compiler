@@ -1,3 +1,4 @@
+#pragma once
 #include "stdafx.h"
 #include <iostream>
 #include <vector>
@@ -31,40 +32,11 @@ public:
 	friend bool operator!= ( const LRItem & , const LRItem &);
 
 	LRItem():dotPosition(-1){};
+	LRItem(int, Token, vector<Token>, Token, long);
 	LRItem( const LRItem&  );
 	~LRItem();
-
-	
 private:
 
 };
 
 
-//implements below
-LRItem::LRItem( const LRItem& a ){
-	leftSide = a.leftSide;
-	rightSide = a.rightSide;
-	dotPosition = a.dotPosition;
-	lookAhead = a.lookAhead;
-	semanticActionID  = a.semanticActionID;
-};
-
-bool operator== ( const LRItem& a, const LRItem& b ){
-	if ( a.leftSide.classMarco != b.leftSide.classMarco || 
-		a.dotPosition != b.dotPosition || 
-		a.lookAhead.classMarco != b.lookAhead.classMarco ||
-		a.rightSide.size() != b.rightSide.size() ){
-		return false;
-	}
-	for (int i=0; i<a.rightSide.size(); i++){
-		if ( a.rightSide[i].classMarco != b.rightSide[i].classMarco ){
-			return false;
-		}
-	}
-	return true;
-};
-
-
-bool operator!= ( const LRItem& a, const LRItem& b ){
-	return !( a == b );
-}

@@ -59,8 +59,16 @@ const BriefCompiler::OBJECT_CODE_SEQUENCE BriefCompiler::getObjectCode(){
 BriefCompiler::OBJECT_CODE_SEQUENCE BriefCompiler::activateSynSemantic( BriefCompiler::TOKEN_SEQUENCE inputTokenSequence ){
 	BriefCompiler::OBJECT_CODE_SEQUENCE temp;
 	SSAnalyser.activate( inputTokenSequence );
-	temp = SSAnalyser.getResult();
+	temp = SSAnalyser.getObjectCode();
 	//error-check
 	objectCode = temp;
 	return objectCode;
+};
+
+const vector<LRItem> BriefCompiler::getReducedLRItem(){
+	return SSAnalyser.getReducedLRItem();
+};
+
+const vector<long> BriefCompiler::getSSErrorRecord(){
+	return SSAnalyser.getErrorRecord();
 };

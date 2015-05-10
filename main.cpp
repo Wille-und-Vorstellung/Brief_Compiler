@@ -8,7 +8,8 @@
  *	1. main test frame for the brief compiler
  *	2. 
  */
-
+//#define RELEASE
+#define TEST_SS
 
 int _tmain(){
 	//fibericating 
@@ -19,6 +20,7 @@ int _tmain(){
 	tokenTable.clear();
 
 	string sourceFilePath("../testSource.txt");
+#ifdef RELEASE
 	testCompiller.activateCompiler(sourceFilePath);
 
 	cout << "the Lexer output:" << endl;
@@ -31,7 +33,41 @@ int _tmain(){
 		cout << j << "\'th row: " << testCompiller.getTokenTable()[j].classMacro << " | " << testCompiller.getTokenTable()[j].dvalue << " | " << testCompiller.getTokenTable()[j].svalue << endl;
 	}
 
+	cout << "the syntax results below:" << endl;
+
+
+	cout << "the semantic results(i.e. the 4-tuple code ) below" << endl;
+
 	cout << "about to end" << endl;
+#endif
 	
+#ifdef TEST_SS
+	/*
+	 * single test on SynSemantic Analyser
+	 */
+	SynSemantic testSS;
+	//firstly, construct a virtual tokenSequence
+	vector<Token> virtualTS;
+	virtualTS.push_back(Token("", "a", -1));
+	virtualTS.push_back(Token("", "b", -1));
+	virtualTS.push_back(Token("", "a", -1));
+	virtualTS.push_back(Token("", "b", -1));
+
+	//activate SynSemantic
+	testSS.activate( virtualTS );
+	vector<LRItem> reduced;
+	reduced = testSS.getReducedLRItem();
+
+	cout << "Reduced LRItem below: " << endl;
+	for (int i = 0; i < reduced.size(); i++){
+		cout << reduced[i].leftSide.classMarco << " -> ";
+		for (int j = 0; j < reduced[i].rightSide.size(); j++){
+			cout << reduced[i].rightSide[j].classMarco << " ";
+		}
+		cout << endl;
+	}
+
+
+#endif
 	return 117;
 }

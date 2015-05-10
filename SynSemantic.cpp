@@ -1,10 +1,22 @@
+#pragma once
 #include "stdafx.h"
 #include "SynSemantic.hpp"
 #include "LRICluster.hpp"
 
+//#define RELEASE
+#define TEST_SS
+
 //#define TRANSCRIBE_OFFSET 100
-const vector<Tuple4> SynSemantic::getResult(){
+const vector<Tuple4> SynSemantic::getObjectCode(){
 	return objectCode;
+};
+
+const vector<LRItem> SynSemantic::getReducedLRItem(){
+	return reducedLRItem;
+};
+
+const vector<long> SynSemantic::getErrorRecord(){
+	return errorRecord;
 };
 
 const Tuple4 SynSemantic::gets( long i ){
@@ -20,7 +32,7 @@ Token SynSemantic::accessTokenSequence( long i ){
 		return tokenSequence[i];
 	}
 	cerr << "error: index out of range accessing tokenSequence." << endl;
-	return ;
+	return tokenSequence[0];
 };
 
 void SynSemantic::showErrorRecord(){
@@ -72,7 +84,7 @@ void SynSemantic::activate( vector<Token> lexerResult ){
 	getchar();
 	showAddressCode();
 	getchar();
-
+#ifdef RELEASE
 	cout 
 		<< 
 		"It's quite certain that there exists some time point in future when you staring at this " <<
@@ -81,6 +93,7 @@ void SynSemantic::activate( vector<Token> lexerResult ){
 		"after writting these words." 
 		<< 
 	endl;
+#endif
 	cout << "syntax and semantic analysis complete." << endl;
 	return;
 };
@@ -143,7 +156,7 @@ string SynSemantic::LRAnalyserAUX( vector<LRStakeEntry>& currentStake, long& sIn
 	}
 
 	LRStakeEntry tempEntry;
-	vector<LRStakeEntry>* currentStake = &LRStake;
+	//vector<LRStakeEntry>* currentStake = &LRStake;
 	if ( !reduceFlag ) { //in stake
 		tempEntry.classMacro = x.classMarco;
 		//tempEntry.state = tempTableItem.semanticActionID;//?????????????????????
@@ -179,7 +192,7 @@ vector<Token> SynSemantic::first( vector<Token> x ){
 	vector<Token> temp;
 	firstSet.clear();
 	if ( x.size() == 0 ){
-		return ;
+		return x;
 	}
 	clearFirstTrail();//necessary before calling firstAUX
 	firstSet = firstAUX( x[0] );
@@ -623,18 +636,73 @@ int SynSemantic::transcribeTableIndex(Token x){
 //-----------------------basic configurations (manual specified or read from files)
 void SynSemantic::constructAugmentedGrammar(){/////////////////////////////////////
 	augmentedGrammar.clear();
+	vector<Token> tempR;
+#ifdef RELEASE
+	
+#endif
 
+#ifdef TEST_SS
+	tempR.clear();
+	tempR.push_back( Token("", "S", -1) );
+	augmentedGrammar.push_back( LRItem( 0, Token("", "S'", -1), tempR, Token("", "", -1), 0) );
+
+	tempR.clear();
+	tempR.push_back(Token("", "A", -1));
+	augmentedGrammar.push_back(LRItem(0, Token("", "S", -1), tempR, Token("", "", -1), 1));
+
+	tempR.clear();
+	tempR.push_back(Token("", "B", -1));
+	tempR.push_back(Token("", "A", -1));
+	augmentedGrammar.push_back(LRItem(0, Token("", "A", -1), tempR, Token("", "", -1), 2));
+
+	tempR.clear();
+	tempR.push_back(Token("", "VOID", -1));
+	tempR.push_back(Token("", "A", -1));
+	augmentedGrammar.push_back(LRItem(0, Token("", "A", -1), tempR, Token("", "", -1), 3));
+
+	tempR.clear();
+	tempR.push_back(Token("", "a", -1));
+	tempR.push_back(Token("", "B", -1));
+	augmentedGrammar.push_back(LRItem(0, Token("", "B", -1), tempR, Token("", "", -1), 4));
+
+	tempR.clear();
+	tempR.push_back(Token("", "b", -1));
+	augmentedGrammar.push_back(LRItem(0, Token("", "B", -1), tempR, Token("", "", -1), 5));
+
+
+#endif
 };
 
-void SynSemantic::setSemanticItemList(){///////////////////////////////////////////
+void SynSemantic::setSemanticItemList(){//
 	//insert all semantic items into semanticItemList vector
 	//unfortunately, it has to done manually....
 	semanticItemList.clear();
+	Token temp;
+#ifdef RELEASE
 
+#endif
+
+#ifdef TEST_SS
+	semanticItemList.push_back(Token("", "S", -1));
+	semanticItemList.push_back(Token("", "S'", -1));
+	semanticItemList.push_back(Token("", "A", -1));
+	semanticItemList.push_back(Token("", "B", -1));
+#endif
 };
 
-void SynSemantic::setTerminator(){////////////////////////////////////////////////
+void SynSemantic::setTerminator(){//
 	terminatorSet.clear();
+	Token temp;
+#ifdef RELEASE
+	
+#endif
+
+#ifdef TEST_SS
+	terminatorSet.push_back(Token("", "a", -1));
+	terminatorSet.push_back(Token("", "b", -1));
+	terminatorSet.push_back(Token("", "VOID", -1));
+	terminatorSet.push_back(Token("", "#", -1));
+#endif
 }
 
 void SynSemantic::semanticActionDispatcher(long actionID){///////////////////////

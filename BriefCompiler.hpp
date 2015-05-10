@@ -1,5 +1,7 @@
+#pragma once
 #include"stdafx.h"
 #include<iostream>
+#include"SynSemantic.hpp"
 using std::string;
 
 /*
@@ -20,6 +22,8 @@ public:
 	const vector<ListTuple> getTokenTable();
 	const vector<Token> getLexerResult();
 	const vector<Tuple4> getObjectCode();
+	const vector<LRItem> getReducedLRItem();
+	const vector<long> getSSErrorRecord();
 	
 	BriefCompiler(){
 

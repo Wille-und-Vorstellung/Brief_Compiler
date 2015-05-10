@@ -1,5 +1,13 @@
+#pragma once
 #include"stdafx.h"
 #include<iostream>
+#include"Tuple4.hpp"
+#include"LRItem.hpp"
+#include"LRStakeEntry.hpp"
+#include"AnalysisTableItem.hpp"
+#include"LRStakeEntry.hpp"
+#include"LRICluster.hpp"
+
 using std::string;
 
 #define SEMANTIC_ITEM_N 20
@@ -17,8 +25,11 @@ class SynSemantic{
 public:
 
 	void activate( vector<Token> );
-	const vector<Tuple4> getResult();
 	const Tuple4 gets(long );
+	//result expressing
+	const vector<Tuple4> getObjectCode();
+	const vector<LRItem> getReducedLRItem();
+	const vector<long> getErrorRecord();
 
 	SynSemantic():readerIndex(-1), stakeIndex(-1){
 	};
@@ -66,7 +77,6 @@ private:
 	void setTerminator();
 	bool isInCCollection(vector<LRItem>);
 	long locateReducer(LRItem);
-
 
 	//debug
 	void showProducer();
