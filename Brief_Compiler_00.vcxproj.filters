@@ -83,5 +83,8 @@
     <ClCompile Include="LRICluster.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="AnalysisTableItem.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

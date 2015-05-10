@@ -34,9 +34,4 @@ private:
 
 };
 
-//implements
-AnalysisTableItem::AnalysisTableItem( const AnalysisTableItem& a ){
-	actionType = a.actionType;
-	stateNumber = a.stateNumber;
-	semanticActionID = a.semanticActionID;
-};
+

@@ -30,8 +30,7 @@ public:
 		classMarco = input.classMarco;
 		tableIndex = input.tableIndex;
 	};
-	~Token(){
-	};
+	~Token();
 private:
 
 };

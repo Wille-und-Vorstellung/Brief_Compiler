@@ -9,3 +9,6 @@ Token& Token::operator= (const Token & a){
 	tableIndex = a.tableIndex;
 	return *this;
 };
+
+Token::~Token(){
+};

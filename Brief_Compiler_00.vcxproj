@@ -96,6 +96,7 @@
     <ClInclude Include="Tuple4.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AnalysisTableItem.cpp" />
     <ClCompile Include="BriefCompiler.cpp" />
     <ClCompile Include="Lexer.cpp" />
     <ClCompile Include="LRICluster.cpp" />

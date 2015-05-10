@@ -34,7 +34,7 @@ public:
 	LRItem():dotPosition(-1){};
 	LRItem(int, Token, vector<Token>, Token, long);
 	LRItem( const LRItem&  );
-	~LRItem();
+	~LRItem(){};
 private:
 
 };

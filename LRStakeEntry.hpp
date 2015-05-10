@@ -25,7 +25,7 @@ public:
 	
 	LRStakeEntry():state(-1){};
 	LRStakeEntry( const LRStakeEntry& );
-	~LRStakeEntry();
+	~LRStakeEntry(){};
 private:
 
 };
