@@ -261,9 +261,11 @@ vector<Token> SynSemantic::firstAUX( Token x ){////waiting for sequential inspec
 						break;
 					}
 				}
-				if (j != temp_1.rightSide.size()){//first set of token x do not contain void
+				/*
+				if (j == temp_1.rightSide.size()){//first set of token x do contain void
 					buffer = eraseVOID(buffer);
 				}
+				*/
 				firstSetTemp = joinSet(firstSetTemp, buffer);
 			}
 		}
@@ -294,7 +296,7 @@ vector<LRItem> SynSemantic::getClosure( vector<LRItem> x){//waiting for sequenti
 		targetT = targetLRI.rightSide[targetLRI.dotPosition];
 		//get lookahead chars by First(CDx)
 		tempFS.clear();
-		for (int m = targetLRI.dotPosition; m < targetLRI.rightSide.size(); m++){
+		for (int m = targetLRI.dotPosition + 1; m < targetLRI.rightSide.size(); m++){
 			tempFS.push_back(targetLRI.rightSide[m]);
 		}
 		tempFS.push_back(targetLRI.lookAhead);
@@ -316,11 +318,12 @@ vector<LRItem> SynSemantic::getClosure( vector<LRItem> x){//waiting for sequenti
 						}
 					}
 					
-					if ( matchFlag = false ){
+					if ( matchFlag == false ){
 						//construct new LRItem and push to x 
 						x.push_back(tempLRI);
-						//push to queue if qualified
-						if (tempLRI.dotPosition <= tempLRI.rightSide.size() - 1){
+						//push to queue if qualified, notes the A->.VOID case
+						if (tempLRI.dotPosition <= tempLRI.rightSide.size() - 1 &&
+							! (tempLRI.rightSide.size() == 1 && tempLRI.rightSide[0].classMarco == "VOID") ){
 							queue.push_back(tempLRI);
 						}
 					}
@@ -431,8 +434,9 @@ void SynSemantic::constructAnalysisTable(){/////////////////////////////////////
 		}
 		//fill actionTable(deal with reducables and ACC)
 		for (int q = 0; q < currentCC.size();q++){
-
-			if (currentCC.get(q).dotPosition == currentCC.get(q).rightSide.size()){//find one reducable
+			//find one reducable notes the special case of A->.VOID
+			if (currentCC.get(q).dotPosition == currentCC.get(q).rightSide.size() ||
+				(currentCC.get(q).rightSide.size() == 1 && currentCC.get(q).rightSide[0].classMarco == "VOID")){
 				row = i;
 				column = transcribeTableIndex( currentCC.get(q).lookAhead );
 				/*no need for exceptions on ACC I guess...
@@ -515,7 +519,7 @@ vector<Token> SynSemantic::joinSet( vector<Token>& a , vector<Token>& b ){
 vector<Token> SynSemantic::eraseVOID( vector<Token> a ){
 	vector<Token>::iterator temp;
 	bool voidFlag = containVOID( a );
-	if ( voidFlag ){
+	if ( !voidFlag ){
 		return a;
 	}
 	for ( temp = a.begin(); temp != a.end();){
@@ -559,6 +563,7 @@ bool SynSemantic::isVisitedInFT( long i){
 		return true;
 	}
 	bool temp = ( firstSetTrail[i] == 1 ) ? true : false;
+	return temp;
 };
 
 void SynSemantic::initializeLRTC(){
@@ -578,6 +583,7 @@ void SynSemantic::initializeLRTC(){
 	tempC.ID = 0;
 	tempC.pushBack( temp );
 
+	tempC.LRIs = getClosure(tempC.LRIs);
 	canonicalCollection.push_back(tempC);
 };
 
@@ -657,7 +663,6 @@ void SynSemantic::constructAugmentedGrammar(){//////////////////////////////////
 
 	tempR.clear();
 	tempR.push_back(Token("", "VOID", -1));
-	tempR.push_back(Token("", "A", -1));
 	augmentedGrammar.push_back(LRItem(0, Token("", "A", -1), tempR, Token("", "", -1), 3));
 
 	tempR.clear();

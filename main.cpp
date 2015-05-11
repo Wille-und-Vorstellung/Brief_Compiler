@@ -52,6 +52,7 @@ int _tmain(){
 	virtualTS.push_back(Token("", "b", -1));
 	virtualTS.push_back(Token("", "a", -1));
 	virtualTS.push_back(Token("", "b", -1));
+	virtualTS.push_back(Token("", "#", -1));
 
 	//activate SynSemantic
 	testSS.activate( virtualTS );
