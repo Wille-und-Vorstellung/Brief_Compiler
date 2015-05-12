@@ -371,13 +371,14 @@ void SynSemantic::constructCanonicalCollection(){////sequential inspection
 	vector<Token> VT;
 	LRICluster newC;
 	long counter = 0;
+	long id = 0;
 
 	VT = joinSet( terminatorSet, semanticItemList );
 	queue.clear();
 	queue.push_back( canonicalCollection[0] );//push S'->.S, # into queue
 	while ( !queue.empty() ){
 		tempC = queue[0];
-		for (int i = 0; i < tempC.size(); i++){
+		//for (int i = 0; i < tempC.size(); i++){//i XXX
 			for (int j = 0; j < VT.size(); j++){
 				tempT = VT[j];
 				if (tempT.classMarco == "VOID"){
@@ -390,17 +391,22 @@ void SynSemantic::constructCanonicalCollection(){////sequential inspection
 					newC.ID = ++counter;
 					newC.LRIs = tempLRIV;
 					canonicalCollection.push_back(newC);
-					canonicalCollection[i].intrigers.push_back(tempT);
-					canonicalCollection[i].dest.push_back(newC.ID);
+					canonicalCollection[tempC.ID].intrigers.push_back(tempT);
+					canonicalCollection[tempC.ID].dest.push_back(newC.ID);
 					//push into queue also
 					queue.push_back(newC);
 				}
+				else if (tempLRIV.size() != 0 && isInCCollection(tempLRIV)){
+					id = idInCCollection(tempLRIV);
+					canonicalCollection[tempC.ID].intrigers.push_back(tempT);
+					canonicalCollection[tempC.ID].dest.push_back(id);
+				}
 			}
-		}
+		//}
 		//pop the queue front
 		queue.erase(queue.begin());
 	}
-
+	return;
 };
 
 void SynSemantic::constructAnalysisTable(){////////////////////////////////////////int transcribeTableIndex( Token );
@@ -438,7 +444,7 @@ void SynSemantic::constructAnalysisTable(){/////////////////////////////////////
 		//fill actionTable(trans with terminator)
 		for (int j = 0; j < terminatorSet.size(); j++){
 			targetTerminator = terminatorSet[j];
-			for (int p = 0; p < currentCC.size(); p++){
+			for (int p = 0; p < currentCC.intrigers.size(); p++){
 				if (currentCC.intrigers[p].classMarco == targetTerminator.classMarco){//got one trans
 					row = i;
 					column = transcribeTableIndex(targetTerminator);
@@ -453,24 +459,26 @@ void SynSemantic::constructAnalysisTable(){/////////////////////////////////////
 			if (currentCC.get(q).dotPosition == currentCC.get(q).rightSide.size() ||
 				(currentCC.get(q).rightSide.size() == 1 && currentCC.get(q).rightSide[0].classMarco == "VOID")){
 				row = i;
-				column = transcribeTableIndex( currentCC.get(q).lookAhead );
-				/*no need for exceptions on ACC I guess...
+				column = transcribeTableIndex(currentCC.get(q).lookAhead);
+				
 				if (currentCC.get(q).leftSide.classMarco == "S'" && 
 					currentCC.get(q).rightSide.size() == 1 &&
 					currentCC.get(q).rightSide[0].classMarco == "S" &&
 					currentCC.get(q).dotPosition == 1 &&
 					currentCC.get(q).lookAhead.classMarco == "#"){//the ACC
+
+					actionTable[row][column].actionType = "ACC";
 				}
-				else */
+				else {
 					actionTable[row][column].actionType = "R";
 					actionTable[row][column].semanticActionID = locateReducer(currentCC.get(q));
-				
+				}
 			}
 		}
 		//fill gotoTable 
 		for (int k = 0; k < semanticItemList.size(); k++){
 			targetSI = semanticItemList[k];
-			for (int p = 0; p < currentCC.size(); p++){
+			for (int p = 0; p < currentCC.intrigers.size(); p++){
 				if (currentCC.intrigers[p].classMarco == targetSI.classMarco){//got one trans
 					row = i;
 					column = transcribeTableIndex(targetSI);;
@@ -481,7 +489,7 @@ void SynSemantic::constructAnalysisTable(){/////////////////////////////////////
 		}
 
 	}
-
+	return;
 };
 
 //-----------------------the costars
@@ -489,10 +497,9 @@ long SynSemantic::locateReducer(LRItem a){
 	LRItem temp;
 	int j = 0;
 	for (int i = 0; i < augmentedGrammar.size(); i++){
-		if (temp == augmentedGrammar[i] &&
-			temp.leftSide.classMarco == a.leftSide.classMarco &&
-			temp.rightSide.size() == a.rightSide.size() &&
-			temp.lookAhead.classMarco == a.lookAhead.classMarco){
+		temp = augmentedGrammar[i];
+		if (temp.leftSide.classMarco == a.leftSide.classMarco &&
+			temp.rightSide.size() == a.rightSide.size() ){
 			for ( j = 0; j < temp.rightSide.size(); j++){
 				if (temp.rightSide[j].classMarco != a.rightSide[j].classMarco){
 					break;
@@ -627,6 +634,23 @@ bool SynSemantic::isInCCollection(vector<LRItem> x){
 	}
 	return false;
 };
+long SynSemantic::idInCCollection(vector<LRItem> x){
+	int j = 0;
+	for (int i = 0; i < canonicalCollection.size(); i++){
+		if (x.size() != canonicalCollection[i].size())
+			continue;
+		for (j = 0; j < canonicalCollection[i].size(); j++){
+			if (x[j] != canonicalCollection[i].get(j)){
+				break;
+			}
+		}
+		if (j == canonicalCollection[i].size()){
+			return i;
+		}
+	}
+	cerr << "WARNING: target not found in 'idInCClloction'" << endl;
+	return 0;
+}
 
 bool SynSemantic::isTerminator(Token a){
 	for (int i = 0; i < terminatorSet.size(); i++){

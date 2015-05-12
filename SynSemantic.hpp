@@ -76,6 +76,7 @@ private:
 	Token newToken( string macro );
 	void setTerminator();
 	bool isInCCollection(vector<LRItem>);
+	long idInCCollection(vector<LRItem>);
 	long locateReducer(LRItem);
 
 	//debug
