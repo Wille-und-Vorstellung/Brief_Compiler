@@ -202,21 +202,26 @@ vector<Token> SynSemantic::first( vector<Token> x ){
 	}
 	else if( voidFlag && x.size() > 1) {
 		//delete VOID in firstSet
-		firstSet = eraseVOID( firstSet );
+		firstSet = eraseVOID(firstSet);
+		/*
 		clearFirstTrail();//necessary before calling firstAUX
 		temp = eraseVOID( firstAUX( x[1] ) );
 		firstSet = joinSet( firstSet, temp );
+		*/
 		int i;
-		for (  i=1; i<x.size()-1; i++ ){
+		for (  i=1; i<x.size(); i++ ){
+			clearFirstTrail();//necessary before calling firstAUX
 			temp = firstAUX( x[i] );
 			if ( containVOID( temp ) ){
-				clearFirstTrail();//necessary before calling firstAUX
-				temp = eraseVOID( firstAUX( x[i+1] ) );
-				firstSet = joinSet( firstSet, temp );
+				temp = eraseVOID( temp );
+				firstSet = joinSet(firstSet, temp);
+				continue;
 			}
+			firstSet = joinSet(firstSet, temp);
+			break;
 		}
-		clearFirstTrail();//necessary before calling firstAUX
-		if ( i == x.size()-1 && containVOID( firstAUX( x[i] ) ) ){
+		//clearFirstTrail();//necessary before calling firstAUX
+		if ( i == x.size()  ){
 			Token voidToken;
 			voidToken.classMarco = "VOID";
 			firstSet.push_back( voidToken );
@@ -252,20 +257,26 @@ vector<Token> SynSemantic::firstAUX( Token x ){////waiting for sequential inspec
 			if (  temp_1.leftSide.classMarco == x.classMarco ){
 				buffer.clear();
 				for (j = 0; j < temp_1.rightSide.size(); j++){
-					if (temp_1.rightSide[j].classMarco != "VOID"){
-						temp = firstAUX( temp_1.rightSide[j] );
-						buffer = joinSet(buffer, temp);
+					//if (temp_1.rightSide[j].classMarco != "VOID"){//problem here on case A->VOID
+						temp = firstAUX( temp_1.rightSide[j] );		//problem fixed by cancell this "if"
 						if (containVOID(temp)){
+							temp = eraseVOID(temp);
+							buffer = joinSet(buffer, temp);
 							continue;
 						}
+						buffer = joinSet(buffer, temp);
 						break;
-					}
+					//}
 				}
-				/*
-				if (j == temp_1.rightSide.size()){//first set of token x do contain void
-					buffer = eraseVOID(buffer);
+
+				//first set of token x do contain void
+				if (j == temp_1.rightSide.size()  ){
+					buffer = eraseVOID(buffer);//prevent duplicate VOID
+					Token voidToken;
+					voidToken.classMarco = "VOID";
+					buffer.push_back(voidToken);
 				}
-				*/
+				
 				firstSetTemp = joinSet(firstSetTemp, buffer);
 			}
 		}
@@ -369,6 +380,10 @@ void SynSemantic::constructCanonicalCollection(){////sequential inspection
 		for (int i = 0; i < tempC.size(); i++){
 			for (int j = 0; j < VT.size(); j++){
 				tempT = VT[j];
+				if (tempT.classMarco == "VOID"){
+					continue;
+				}
+
 				tempLRIV = gotoTransition( tempT, tempC.LRIs );
 				if ( tempLRIV.size() != 0  && !isInCCollection( tempLRIV ) ){
 					//construct a new LRICluster and push into canonicalCollection
@@ -529,6 +544,7 @@ vector<Token> SynSemantic::eraseVOID( vector<Token> a ){
 		else
 			temp++;
 	}
+	return a;
 }
 
 void SynSemantic::prepareFirstSetRelated(){
@@ -600,7 +616,7 @@ bool SynSemantic::isInCCollection(vector<LRItem> x){
 		if (x.size() != canonicalCollection[i].size())
 			continue;
 		for ( j = 0; j < canonicalCollection[i].size(); j++){
-			if (x[i] != canonicalCollection[i].get(j)){
+			if (x[j] != canonicalCollection[i].get(j)){
 				break;
 			}
 		}
