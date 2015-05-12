@@ -104,10 +104,11 @@ bool SynSemantic::LRAnalyser( Token x ){/////////////
 	string actionFlag;
 	do{
 		actionFlag = LRAnalyserAUX( LRStake, stakeIndex, actionTable, gotoTable, x );
+		
 		if ( actionFlag == "S" ){
 			break;
 		}
-		else if ( actionFlag == "R" ) {//needs to continue until returns R or ACC
+		else if ( actionFlag == "R" ) {//needs to continue until returns S or ACC
 			continue;
 		}
 		else if ( actionFlag == "ACC" ){
@@ -117,6 +118,7 @@ bool SynSemantic::LRAnalyser( Token x ){/////////////
 		else if ( actionFlag == "ERROR" ){
 			break;
 		}
+		
 	}while( actionFlag == "R" );
 	return false;
 };
@@ -166,7 +168,13 @@ string SynSemantic::LRAnalyserAUX( vector<LRStakeEntry>& currentStake, long& sIn
 	}
 	else if ( reduceFlag ) {//reduce
 		//stage one: pop stake
-		long reduceLength = augmentedGrammar[tempEntry.state].rightSide.size();
+		long reduceLength = augmentedGrammar[tempTableItem.semanticActionID].rightSide.size();
+			//the case of reduce A -> VOID
+		if (augmentedGrammar[tempTableItem.semanticActionID].rightSide.size() == 1 &&
+			augmentedGrammar[tempTableItem.semanticActionID].rightSide[0].classMarco == "VOID"){
+
+			reduceLength = 0;
+		}
 		for (int i=0; i< reduceLength; i++){
 			currentStake.pop_back();//potential hazard here: stake goes empty before loop stops
 			sIndex--;
