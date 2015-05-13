@@ -10,7 +10,7 @@
 
 using std::string;
 
-#define SEMANTIC_ITEM_N 20
+#define SEMANTIC_ITEM_N 13
 
 /*
  * author: Ruogu Gao
@@ -78,6 +78,7 @@ private:
 	bool isInCCollection(vector<LRItem>);
 	long idInCCollection(vector<LRItem>);
 	long locateReducer(LRItem);
+	void manualSpecifyFirstSets();
 
 	//debug
 	void showProducer();
@@ -114,4 +115,12 @@ private:
 	vector<Token> semanticItemList;
 	vector<Token> terminatorSet;
 	vector<LRICluster> canonicalCollection;
+
+	vector<Token> firstB;//hold the manually specified first set of B
+	vector<Token> firstE;
+	vector<Token> firstLIST;
+	vector<Token> firstLEFT;
+	vector<Token> firstF;
+	vector<Token> firstP;
+	vector<Token> firstK;
 };

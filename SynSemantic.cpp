@@ -6,6 +6,9 @@
 #define RELEASE
 //#define TEST_SS
 
+#define HEURISTIC_FIRST
+//#define CHECK_FIRST
+
 //#define TRANSCRIBE_OFFSET 100
 const vector<Tuple4> SynSemantic::getObjectCode(){
 	return objectCode;
@@ -52,6 +55,9 @@ void SynSemantic::activate(vector<Token> lexerResult, vector<Token> tokenLexicon
 	//preprocess: prepare the LR(1) canonical collection and ananlysis table
 	setSemanticItemList();
 	setTerminator( tokenLexicon );
+#ifdef HEURISTIC_FIRST
+	manualSpecifyFirstSets();
+#endif
 	constructAugmentedGrammar();
 	constructCanonicalCollection();
 	constructAnalysisTable();
@@ -196,16 +202,25 @@ string SynSemantic::LRAnalyserAUX( vector<LRStakeEntry>& currentStake, long& sIn
 };
 
 vector<Token> SynSemantic::first( vector<Token> x ){
+#ifdef CHECK_FIRST
+	cout << "enter first() : " << x.size() << " - " << x[0].classMarco << endl;
+#endif
 	vector<Token> firstSet;
 	vector<Token> temp;
 	firstSet.clear();
 	if ( x.size() == 0 ){
+#ifdef CHECK_FIRST		
+		cout << "quit first() : " << x.size() << " - " << x[0].classMarco << endl;
+#endif
 		return x;
 	}
 	clearFirstTrail();//necessary before calling firstAUX
 	firstSet = firstAUX( x[0] );
 	bool voidFlag = containVOID( firstSet );
 	if ( !voidFlag ){//find no VOID
+#ifdef CHECK_FIRST
+		cout << "quit first() : " << x.size() << " - " << x[0].classMarco << endl;
+#endif
 		return firstSet;
 	}
 	else if( voidFlag && x.size() > 1) {
@@ -237,11 +252,38 @@ vector<Token> SynSemantic::first( vector<Token> x ){
 
 	}
 	else;
-		
+#ifdef CHECK_FIRST		
+	cout << "quit first() : " << x.size() << " - " << x[0].classMarco << endl;
+#endif
 	return firstSet;
 };
 
 vector<Token> SynSemantic::firstAUX( Token x ){////waiting for sequential inspection
+#ifdef HEURISTIC_FIRST
+	//manually specify the first set of B to speed up 
+	if (x.classMarco == "B"){
+		return firstB;
+	}
+	else if (x.classMarco == "K"){
+		return firstK;
+	}
+	else if (x.classMarco == "E"){
+		return firstE;
+	}
+	else if (x.classMarco == "P"){
+		return firstP;
+	}
+	else if (x.classMarco == "F"){
+		return firstF;
+	}
+	else if (x.classMarco == "LEFT"){
+		return firstLEFT;
+	}
+	else if (x.classMarco == "LIST"){
+		return firstLIST;
+	}
+	else;
+#endif
 	vector<Token> firstSetTemp;
 	firstSetTemp.clear();
 	bool extensionFlag;
@@ -403,6 +445,7 @@ void SynSemantic::constructCanonicalCollection(){////sequential inspection
 					canonicalCollection[tempC.ID].dest.push_back(newC.ID);
 					//push into queue also
 					queue.push_back(newC);
+					cout << "new canonical collection added: " << counter << endl;
 				}
 				else if (tempLRIV.size() != 0 && isInCCollection(tempLRIV)){
 					id = idInCCollection(tempLRIV);
@@ -1051,6 +1094,68 @@ void SynSemantic::setTerminator( vector<Token> tokenLexicon){//
 	terminatorSet.push_back(Token("", "VOID", -1));
 	terminatorSet.push_back(Token("", "#", -1));
 #endif
+}
+
+void SynSemantic::manualSpecifyFirstSets(){//manually specify the first of B to speed up the whole system
+	firstB.clear();						//ad-hoc I know, I hate it too bro! 
+	firstK.clear();						//but I really ain't get much choice right now
+	firstE.clear();
+	firstLIST.clear();
+	firstF.clear();
+	firstLEFT.clear();
+	firstP.clear();
+
+	firstLIST.push_back(Token("", "ID", -1));
+
+	firstLEFT.push_back(Token("", "ID", -1));
+
+	firstF.push_back(Token("", "SEP05", -1));
+	firstF.push_back(Token("", "ID", -1));
+
+	firstP.push_back(Token("", "SEP05", -1));
+	firstP.push_back(Token("", "ID", -1));
+
+	firstE.push_back(Token("", "INTC", -1));
+	firstE.push_back(Token("", "REALC", -1));
+	firstE.push_back(Token("", "STRINGC", -1));
+	firstE.push_back(Token("", "SEP05", -1));
+	firstE.push_back(Token("", "ID", -1));
+
+	firstK.push_back(Token("", "BOOLC", -1));
+	firstK.push_back(Token("", "NOT", -1));
+	firstK.push_back(Token("", "ID", -1));
+	firstK.push_back(Token("", "SEP05", -1));
+	firstK.push_back(Token("", "NULL", -1));
+	firstK.push_back(Token("", "INTC", -1));
+	firstK.push_back(Token("", "REALC", -1));
+	firstK.push_back(Token("", "STRINGC", -1));
+
+	firstB.push_back(Token("", "NOT", -1));
+	firstB.push_back(Token("", "ID", -1));
+	firstB.push_back(Token("", "SEP05", -1));
+	firstB.push_back(Token("", "BOOLC", -1));
+	firstB.push_back(Token("", "NULL", -1));
+	firstB.push_back(Token("", "INTC", -1));
+	firstB.push_back(Token("", "REALC", -1));
+	firstB.push_back(Token("", "STRINGC", -1));
+
+	//update to firstSet
+	Token temp("", "", -1);
+	temp.classMarco = "B";
+	firstSet[indexInSIL(temp)] = firstB;
+	temp.classMarco = "K";
+	firstSet[indexInSIL(temp)] = firstK;
+	temp.classMarco = "E";
+	firstSet[indexInSIL(temp)] = firstE;
+	temp.classMarco = "P";
+	firstSet[indexInSIL(temp)] = firstP;
+	temp.classMarco = "F";
+	firstSet[indexInSIL(temp)] = firstF;
+	temp.classMarco = "LEFT";
+	firstSet[indexInSIL(temp)] = firstLEFT;
+	temp.classMarco = "LIST";
+	firstSet[indexInSIL(temp)] = firstLIST;
+	return;
 }
 
 void SynSemantic::semanticActionDispatcher(long actionID){///////////////////////

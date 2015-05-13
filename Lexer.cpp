@@ -357,7 +357,7 @@ bool Lexer::isRelevant( char ichar){
 
 void Lexer::initiateLexicon(){
 	tokenLexicon.push_back(Token("", "INTC", -1));
-	tokenLexicon.push_back(Token("", "FLOATC", -1));
+	tokenLexicon.push_back(Token("", "REALC", -1));
 	tokenLexicon.push_back(Token("", "STRINGC", -1));
 	tokenLexicon.push_back( Token( "int", "INT", -1) );
 	tokenLexicon.push_back( Token( "float", "FLOAT", -1) );
