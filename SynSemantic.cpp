@@ -3,8 +3,8 @@
 #include "SynSemantic.hpp"
 #include "LRICluster.hpp"
 
-//#define RELEASE
-#define TEST_SS
+#define RELEASE
+//#define TEST_SS
 
 //#define TRANSCRIBE_OFFSET 100
 const vector<Tuple4> SynSemantic::getObjectCode(){
@@ -47,11 +47,11 @@ void SynSemantic::showErrorRecord(){
 	}
 };
 
-void SynSemantic::activate( vector<Token> lexerResult ){
+void SynSemantic::activate(vector<Token> lexerResult, vector<Token> tokenLexicon){
 	tokenSequence = lexerResult;
 	//preprocess: prepare the LR(1) canonical collection and ananlysis table
 	setSemanticItemList();
-	setTerminator();
+	setTerminator( tokenLexicon );
 	constructAugmentedGrammar();
 	constructCanonicalCollection();
 	constructAnalysisTable();
@@ -692,7 +692,288 @@ void SynSemantic::constructAugmentedGrammar(){//////////////////////////////////
 	augmentedGrammar.clear();
 	vector<Token> tempR;
 #ifdef RELEASE
-	
+	tempR.clear();
+	tempR.push_back(Token("", "S", -1));
+	augmentedGrammar.push_back(LRItem(0, Token("", "S'", -1), tempR, Token("", "", -1), 0));
+
+	tempR.clear();
+	tempR.push_back(Token("", "I", -1));
+	tempR.push_back(Token("", "SEP01", -1));
+	augmentedGrammar.push_back(LRItem(0, Token("", "S", -1), tempR, Token("", "", -1), 0));
+
+	tempR.clear();
+	tempR.push_back(Token("", "VOID", -1));
+	augmentedGrammar.push_back(LRItem(0, Token("", "S", -1), tempR, Token("", "", -1), 0));
+
+	tempR.clear();
+	tempR.push_back(Token("", "INT", -1));
+	tempR.push_back(Token("", "ID", -1));
+	augmentedGrammar.push_back(LRItem(0, Token("", "I", -1), tempR, Token("", "", -1), 0));
+
+	tempR.clear();
+	tempR.push_back(Token("", "FLOAT", -1));
+	tempR.push_back(Token("", "ID", -1));
+	augmentedGrammar.push_back(LRItem(0, Token("", "I", -1), tempR, Token("", "", -1), 0));
+
+	tempR.clear();
+	tempR.push_back(Token("", "STRING", -1));
+	tempR.push_back(Token("", "ID", -1));
+	augmentedGrammar.push_back(LRItem(0, Token("", "I", -1), tempR, Token("", "", -1), 0));
+
+	tempR.clear();
+	tempR.push_back(Token("", "BOOL", -1));
+	tempR.push_back(Token("", "ID", -1));
+	augmentedGrammar.push_back(LRItem(0, Token("", "I", -1), tempR, Token("", "", -1), 0));
+
+	tempR.clear();
+	tempR.push_back(Token("", "INT", -1));
+	tempR.push_back(Token("", "MULTI", -1));
+	tempR.push_back(Token("", "ID", -1));
+	augmentedGrammar.push_back(LRItem(0, Token("", "I", -1), tempR, Token("", "", -1), 0));
+
+	tempR.clear();
+	tempR.push_back(Token("", "FLOAT", -1));
+	tempR.push_back(Token("", "MULTI", -1));
+	tempR.push_back(Token("", "ID", -1));
+	augmentedGrammar.push_back(LRItem(0, Token("", "I", -1), tempR, Token("", "", -1), 0));
+
+	tempR.clear();
+	tempR.push_back(Token("", "STRING", -1));
+	tempR.push_back(Token("", "MULTI", -1));
+	tempR.push_back(Token("", "ID", -1));
+	augmentedGrammar.push_back(LRItem(0, Token("", "I", -1), tempR, Token("", "", -1), 0));
+
+	tempR.clear();
+	tempR.push_back(Token("", "BOOL", -1));
+	tempR.push_back(Token("", "MULTI", -1));
+	tempR.push_back(Token("", "ID", -1));
+	augmentedGrammar.push_back(LRItem(0, Token("", "I", -1), tempR, Token("", "", -1), 0));
+
+	tempR.clear();
+	tempR.push_back(Token("", "T", -1));
+	augmentedGrammar.push_back(LRItem(0, Token("", "I", -1), tempR, Token("", "", -1), 0));
+	/*
+	tempR.clear();
+	tempR.push_back(Token("", "B", -1));
+	augmentedGrammar.push_back(LRItem(0, Token("", "I", -1), tempR, Token("", "", -1), 0));
+	*/
+	tempR.clear();
+	tempR.push_back(Token("", "C", -1));
+	augmentedGrammar.push_back(LRItem(0, Token("", "I", -1), tempR, Token("", "", -1), 0));
+
+	tempR.clear();
+	tempR.push_back(Token("", "LEFT", -1));
+	tempR.push_back(Token("", "AEQ", -1));
+	tempR.push_back(Token("", "E", -1));
+	augmentedGrammar.push_back(LRItem(0, Token("", "T", -1), tempR, Token("", "", -1), 0));
+
+	tempR.clear();
+	tempR.push_back(Token("", "LEFT", -1));
+	tempR.push_back(Token("", "AEQ", -1));
+	tempR.push_back(Token("", "B", -1));
+	augmentedGrammar.push_back(LRItem(0, Token("", "T", -1), tempR, Token("", "", -1), 0));
+
+	tempR.clear();
+	tempR.push_back(Token("", "INTC", -1));
+	augmentedGrammar.push_back(LRItem(0, Token("", "E", -1), tempR, Token("", "", -1), 0));
+
+	tempR.clear();
+	tempR.push_back(Token("", "REALC", -1));
+	augmentedGrammar.push_back(LRItem(0, Token("", "E", -1), tempR, Token("", "", -1), 0));
+
+	tempR.clear();
+	tempR.push_back(Token("", "STRINGC", -1));
+	augmentedGrammar.push_back(LRItem(0, Token("", "E", -1), tempR, Token("", "", -1), 0));
+
+	tempR.clear();
+	tempR.push_back(Token("", "E", -1));
+	tempR.push_back(Token("", "PLUS", -1));
+	tempR.push_back(Token("", "P", -1));
+	augmentedGrammar.push_back(LRItem(0, Token("", "E", -1), tempR, Token("", "", -1), 0));
+
+	tempR.clear();
+	tempR.push_back(Token("", "E", -1));
+	tempR.push_back(Token("", "MINUS", -1));
+	tempR.push_back(Token("", "P", -1));
+	augmentedGrammar.push_back(LRItem(0, Token("", "E", -1), tempR, Token("", "", -1), 0));
+
+	tempR.clear();
+	tempR.push_back(Token("", "P", -1));
+	augmentedGrammar.push_back(LRItem(0, Token("", "E", -1), tempR, Token("", "", -1), 0));
+
+	tempR.clear();
+	tempR.push_back(Token("", "F", -1));
+	augmentedGrammar.push_back(LRItem(0, Token("", "P", -1), tempR, Token("", "", -1), 0));
+
+	tempR.clear();
+	tempR.push_back(Token("", "SEP05", -1));
+	tempR.push_back(Token("", "E", -1));
+	tempR.push_back(Token("", "SEP06", -1));
+	augmentedGrammar.push_back(LRItem(0, Token("", "F", -1), tempR, Token("", "", -1), 0));
+
+	tempR.clear();
+	tempR.push_back(Token("", "P", -1));
+	tempR.push_back(Token("", "MULTI", -1));
+	tempR.push_back(Token("", "F", -1));
+	augmentedGrammar.push_back(LRItem(0, Token("", "P", -1), tempR, Token("", "", -1), 0));
+
+	tempR.clear();
+	tempR.push_back(Token("", "P", -1));
+	tempR.push_back(Token("", "RDIV", -1));
+	tempR.push_back(Token("", "F", -1));
+	augmentedGrammar.push_back(LRItem(0, Token("", "P", -1), tempR, Token("", "", -1), 0));
+
+	tempR.clear();
+	tempR.push_back(Token("", "LEFT", -1));
+	augmentedGrammar.push_back(LRItem(0, Token("", "F", -1), tempR, Token("", "", -1), 0));
+
+	tempR.clear();
+	tempR.push_back(Token("", "ID", -1));
+	augmentedGrammar.push_back(LRItem(0, Token("", "LEFT", -1), tempR, Token("", "", -1), 0));
+
+	tempR.clear();
+	tempR.push_back(Token("", "LIST", -1));
+	tempR.push_back(Token("", "SEP08", -1));
+	augmentedGrammar.push_back(LRItem(0, Token("", "LEFT", -1), tempR, Token("", "", -1), 0));
+
+	tempR.clear();
+	tempR.push_back(Token("", "ID", -1));
+	tempR.push_back(Token("", "SEP07", -1));
+	tempR.push_back(Token("", "E", -1));
+	augmentedGrammar.push_back(LRItem(0, Token("", "LIST", -1), tempR, Token("", "", -1), 0));
+
+	tempR.clear();
+	tempR.push_back(Token("", "LIST", -1));
+	tempR.push_back(Token("", "SEP02", -1));
+	tempR.push_back(Token("", "E", -1));
+	augmentedGrammar.push_back(LRItem(0, Token("", "LIST", -1), tempR, Token("", "", -1), 0));
+
+	tempR.clear();
+	tempR.push_back(Token("", "NOT", -1));
+	tempR.push_back(Token("", "B", -1));
+	augmentedGrammar.push_back(LRItem(0, Token("", "B", -1), tempR, Token("", "", -1), 0));
+
+	tempR.clear();
+	tempR.push_back(Token("", "ID", -1));
+	augmentedGrammar.push_back(LRItem(0, Token("", "B", -1), tempR, Token("", "", -1), 0));
+
+	tempR.clear();
+	tempR.push_back(Token("", "SEP05", -1));
+	tempR.push_back(Token("", "B", -1));
+	tempR.push_back(Token("", "SEP06", -1));
+	augmentedGrammar.push_back(LRItem(0, Token("", "B", -1), tempR, Token("", "", -1), 0));
+
+	tempR.clear();
+	tempR.push_back(Token("", "SEP05", -1));
+	tempR.push_back(Token("", "B", -1));
+	tempR.push_back(Token("", "SEP06", -1));
+	augmentedGrammar.push_back(LRItem(0, Token("", "B", -1), tempR, Token("", "", -1), 0));
+
+	tempR.clear();
+	tempR.push_back(Token("", "BOOLC", -1));
+	augmentedGrammar.push_back(LRItem(0, Token("", "B", -1), tempR, Token("", "", -1), 0));
+
+	tempR.clear();
+	tempR.push_back(Token("", "NULL", -1));
+	augmentedGrammar.push_back(LRItem(0, Token("", "B", -1), tempR, Token("", "", -1), 0));
+
+	tempR.clear();
+	tempR.push_back(Token("", "B", -1));
+	tempR.push_back(Token("", "OR", -1));
+	tempR.push_back(Token("", "K", -1));
+	augmentedGrammar.push_back(LRItem(0, Token("", "B", -1), tempR, Token("", "", -1), 0));
+
+	tempR.clear();
+	tempR.push_back(Token("", "K", -1));
+	augmentedGrammar.push_back(LRItem(0, Token("", "B", -1), tempR, Token("", "", -1), 0));
+
+	tempR.clear();
+	tempR.push_back(Token("", "E", -1));
+	tempR.push_back(Token("", "EQ", -1));
+	tempR.push_back(Token("", "E", -1));
+	augmentedGrammar.push_back(LRItem(0, Token("", "B", -1), tempR, Token("", "", -1), 0));
+
+	tempR.clear();
+	tempR.push_back(Token("", "E", -1));
+	tempR.push_back(Token("", "NEQ", -1));
+	tempR.push_back(Token("", "E", -1));
+	augmentedGrammar.push_back(LRItem(0, Token("", "B", -1), tempR, Token("", "", -1), 0));
+
+	tempR.clear();
+	tempR.push_back(Token("", "E", -1));
+	tempR.push_back(Token("", "GE", -1));
+	tempR.push_back(Token("", "E", -1));
+	augmentedGrammar.push_back(LRItem(0, Token("", "B", -1), tempR, Token("", "", -1), 0));
+
+	tempR.clear();
+	tempR.push_back(Token("", "E", -1));
+	tempR.push_back(Token("", "LE", -1));
+	tempR.push_back(Token("", "E", -1));
+	augmentedGrammar.push_back(LRItem(0, Token("", "B", -1), tempR, Token("", "", -1), 0));
+
+	tempR.clear();
+	tempR.push_back(Token("", "E", -1));
+	tempR.push_back(Token("", "GT", -1));
+	tempR.push_back(Token("", "E", -1));
+	augmentedGrammar.push_back(LRItem(0, Token("", "B", -1), tempR, Token("", "", -1), 0));
+
+	tempR.clear();
+	tempR.push_back(Token("", "E", -1));
+	tempR.push_back(Token("", "LT", -1));
+	tempR.push_back(Token("", "E", -1));
+	augmentedGrammar.push_back(LRItem(0, Token("", "B", -1), tempR, Token("", "", -1), 0));
+
+	tempR.clear();
+	tempR.push_back(Token("", "J", -1));
+	augmentedGrammar.push_back(LRItem(0, Token("", "K", -1), tempR, Token("", "", -1), 0));
+
+	tempR.clear();
+	tempR.push_back(Token("", "BOOLC", -1));
+	augmentedGrammar.push_back(LRItem(0, Token("", "J", -1), tempR, Token("", "", -1), 0));
+
+	tempR.clear();
+	tempR.push_back(Token("", "B", -1));
+	augmentedGrammar.push_back(LRItem(0, Token("", "J", -1), tempR, Token("", "", -1), 0));
+
+	tempR.clear();
+	tempR.push_back(Token("", "K", -1));
+	tempR.push_back(Token("", "AND", -1));
+	tempR.push_back(Token("", "J", -1));
+	augmentedGrammar.push_back(LRItem(0, Token("", "K", -1), tempR, Token("", "", -1), 0));
+
+	tempR.clear();
+	tempR.push_back(Token("", "IF", -1));
+	tempR.push_back(Token("", "B", -1));
+	tempR.push_back(Token("", "THEN", -1));
+	tempR.push_back(Token("", "S", -1));
+	tempR.push_back(Token("", "ELSE", -1));
+	tempR.push_back(Token("", "S", -1));
+	tempR.push_back(Token("", "ENDIF", -1));
+	augmentedGrammar.push_back(LRItem(0, Token("", "C", -1), tempR, Token("", "", -1), 0));
+
+	tempR.clear();
+	tempR.push_back(Token("", "GIVEN", -1));
+	tempR.push_back(Token("", "B", -1));
+	tempR.push_back(Token("", "THEN", -1));
+	tempR.push_back(Token("", "S", -1));
+	tempR.push_back(Token("", "ENDGIVEN", -1));
+	augmentedGrammar.push_back(LRItem(0, Token("", "C", -1), tempR, Token("", "", -1), 0));
+
+	tempR.clear();
+	tempR.push_back(Token("", "REPEAT", -1));
+	tempR.push_back(Token("", "S", -1));
+	tempR.push_back(Token("", "UNTIL", -1));
+	tempR.push_back(Token("", "B", -1));
+	tempR.push_back(Token("", "ENDREPEAT", -1));
+	augmentedGrammar.push_back(LRItem(0, Token("", "C", -1), tempR, Token("", "", -1), 0));
+
+	tempR.clear();
+	tempR.push_back(Token("", "WHILE", -1));
+	tempR.push_back(Token("", "B", -1));
+	tempR.push_back(Token("", "DO", -1));
+	tempR.push_back(Token("", "S", -1));
+	tempR.push_back(Token("", "ENDWHILE", -1));
+	augmentedGrammar.push_back(LRItem(0, Token("", "C", -1), tempR, Token("", "", -1), 0));
 #endif
 
 #ifdef TEST_SS
@@ -732,6 +1013,19 @@ void SynSemantic::setSemanticItemList(){//
 	semanticItemList.clear();
 	Token temp;
 #ifdef RELEASE
+	semanticItemList.push_back(Token("", "S'", -1));
+	semanticItemList.push_back(Token("", "S", -1));
+	semanticItemList.push_back(Token("", "I", -1));
+	semanticItemList.push_back(Token("", "T", -1));
+	semanticItemList.push_back(Token("", "B", -1));
+	semanticItemList.push_back(Token("", "C", -1));
+	semanticItemList.push_back(Token("", "E", -1));
+	semanticItemList.push_back(Token("", "P", -1));
+	semanticItemList.push_back(Token("", "F", -1));
+	semanticItemList.push_back(Token("", "LEFT", -1));
+	semanticItemList.push_back(Token("", "LIST", -1));
+	semanticItemList.push_back(Token("", "K", -1));
+	semanticItemList.push_back(Token("", "J", -1));
 
 #endif
 
@@ -743,11 +1037,12 @@ void SynSemantic::setSemanticItemList(){//
 #endif
 };
 
-void SynSemantic::setTerminator(){//
+void SynSemantic::setTerminator( vector<Token> tokenLexicon){//
 	terminatorSet.clear();
 	Token temp;
 #ifdef RELEASE
-	
+	terminatorSet = tokenLexicon;
+
 #endif
 
 #ifdef TEST_SS

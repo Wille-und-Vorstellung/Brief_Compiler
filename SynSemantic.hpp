@@ -24,7 +24,7 @@ using std::string;
 class SynSemantic{
 public:
 
-	void activate( vector<Token> );
+	void activate(vector<Token>, vector<Token>);
 	const Tuple4 gets(long );
 	//result expressing
 	const vector<Tuple4> getObjectCode();
@@ -74,7 +74,7 @@ private:
 	bool isVisitedInFT(long);//if the coresponding semantic item of input ID has been visited
 	void initializeLRTC();//push S'->.S,# to the first cluster
 	Token newToken( string macro );
-	void setTerminator();
+	void setTerminator( vector<Token> );
 	bool isInCCollection(vector<LRItem>);
 	long idInCCollection(vector<LRItem>);
 	long locateReducer(LRItem);

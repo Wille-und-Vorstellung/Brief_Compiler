@@ -110,6 +110,10 @@ bool Lexer::matchReservedWord( MatchTuple &currentMatch ){
 //return true if matched
 bool Lexer::matchReservedWord_Aux( long index ){
 	bool temp = true;
+	//if the coresponding tokenLexicon entry's attribute is ""(ie nothinig) , should return false;
+	if (tokenLexicon[index].attribute.size() == 0){
+		return false;
+	}
 	//transform string into vector<char>
 	vector<char> targetString;
 	for ( unsigned int i=0; i<tokenLexicon[index].attribute.size(); i++ ){
@@ -335,6 +339,10 @@ const char Lexer::sourceFileEntry( long index ){
 	return sourceFile[index];
 }
 
+const vector<Token> Lexer::getTokenLexicon(){
+	return tokenLexicon;
+}
+
 bool Lexer::isRelevant( char ichar){
 	if ( isalpha(ichar) || isdigit(ichar) || ichar == '_' || 
 			ichar == '+' || ichar == '-' || ichar == '*' || ichar == '/' || ichar == '=' ||
@@ -347,6 +355,9 @@ bool Lexer::isRelevant( char ichar){
 }
 
 void Lexer::initiateLexicon(){
+	tokenLexicon.push_back(Token("", "INTC", -1));
+	tokenLexicon.push_back(Token("", "FLOATC", -1));
+	tokenLexicon.push_back(Token("", "STRINGC", -1));
 	tokenLexicon.push_back( Token( "int", "INT", -1) );
 	tokenLexicon.push_back( Token( "float", "FLOAT", -1) );
 	tokenLexicon.push_back( Token( "do", "DO", -1) );
@@ -392,4 +403,11 @@ void Lexer::initiateLexicon(){
 	tokenLexicon.push_back( Token( "endgiven", "ENDGIVEN", -1) );
 	tokenLexicon.push_back( Token( "repeat", "REPEAT", -1) );
 	tokenLexicon.push_back( Token( "endrepeat", "ENDREPEAT", -1) );
+	tokenLexicon.push_back(Token("then", "THEN", -1));
+	tokenLexicon.push_back(Token("until", "UNTIL", -1));
+	tokenLexicon.push_back(Token("endwhile", "ENDWHILE", -1));
+
+	tokenLexicon.push_back(Token("#", "#", -1));
+	tokenLexicon.push_back(Token("", "VOID", -1));
+	tokenLexicon.push_back(Token("", "ID", -1));
 };

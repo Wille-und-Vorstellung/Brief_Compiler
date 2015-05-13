@@ -31,6 +31,7 @@ public:
 	const TOKEN_SEQUENCE getResult();
 	const TOKEN_TABLE getTokenTable();
 	const vector<long> getErrorRecord();
+	const vector<Token> getTokenLexicon();
 
 	Lexer():tableIndex(-1), scanIndex(-1), currentDomain(0), maximumDomain(currentDomain), 
 		errorFlag(false), lineCounter(1), EOFFlag(false){

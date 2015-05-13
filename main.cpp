@@ -8,8 +8,8 @@
  *	1. main test frame for the brief compiler
  *	2. 
  */
-//#define RELEASE
-#define TEST_SS
+#define RELEASE
+//#define TEST_SS
 
 int _tmain(){
 	//fibericating 
@@ -22,7 +22,7 @@ int _tmain(){
 	string sourceFilePath("../testSource.txt");
 #ifdef RELEASE
 	testCompiller.activateCompiler(sourceFilePath);
-
+	/*
 	cout << "the Lexer output:" << endl;
 	for ( unsigned int i=0; i < testCompiller.getLexerResult().size(); i++ ){
 		cout << "< " << testCompiller.getLexerResult()[i].classMarco << ", " << testCompiller.getLexerResult()[i].tableIndex << " >" << endl;
@@ -32,11 +32,10 @@ int _tmain(){
 	for ( unsigned int j=0; j<testCompiller.getTokenTable().size(); j++ ){
 		cout << j << "\'th row: " << testCompiller.getTokenTable()[j].classMacro << " | " << testCompiller.getTokenTable()[j].dvalue << " | " << testCompiller.getTokenTable()[j].svalue << endl;
 	}
-
-	cout << "the syntax results below:" << endl;
-
-
-	cout << "the semantic results(i.e. the 4-tuple code ) below" << endl;
+	*/
+	cout << "the Syntax & Semantic below:" << endl;
+	vector<Tuple4> obj;
+	obj = testCompiller.getObjectCode();
 
 	cout << "about to end" << endl;
 #endif
@@ -55,7 +54,7 @@ int _tmain(){
 	virtualTS.push_back(Token("", "#", -1));
 
 	//activate SynSemantic
-	testSS.activate( virtualTS );
+	testSS.activate(virtualTS, virtualTS);
 	vector<LRItem> reduced;
 	reduced = testSS.getReducedLRItem();
 
