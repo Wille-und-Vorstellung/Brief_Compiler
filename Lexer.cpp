@@ -1,6 +1,7 @@
 #pragma once
 #include "stdafx.h"
 #include"Lexer.hpp"
+#define RESERVED_WORD_RANGE 24
 
 void Lexer::activate( SOURCE_STRING sourceInput){
 	//check input
@@ -75,14 +76,14 @@ bool Lexer::matchReservedWord( MatchTuple &currentMatch ){
 			//measures in matchReservedWord_Aux prevents (tempIndex + tokenLexicon[i].attribute.size() -1 < sourceFile.size() )from happening given tempFlag == true
 			if ( tempIndex + tokenLexicon[i].attribute.size() < sourceFile.size() ) {//need to check prefix
 				checkPoint = sourceFile[tempIndex + tokenLexicon[i].attribute.size()];
-				if ( i <= 13 && !isdigit(checkPoint) && !isalpha(checkPoint) ){//is reserved word and is not prefix: all reserved word index are between 0-13 in tokenLexicon
+				if ( i <= RESERVED_WORD_RANGE && !isdigit(checkPoint) && !isalpha(checkPoint) ){//is reserved word and is not prefix: all reserved word index are between 0-13 in tokenLexicon
 					//construct currentMatch
 					currentMatch.classMacro = tokenLexicon[i].classMarco;
 					currentMatch.length = tokenLexicon[i].attribute.size();
 					currentMatch.dvalue = -1;
 					currentMatch.svalue = "";
 				}
-				else if ( i > 13 ){//operator spotted
+				else if ( i > RESERVED_WORD_RANGE ){//operator spotted
 					currentMatch.classMacro = tokenLexicon[i].classMarco;
 					currentMatch.length = tokenLexicon[i].attribute.size();
 					currentMatch.dvalue = -1;
@@ -372,6 +373,14 @@ void Lexer::initiateLexicon(){
 	tokenLexicon.push_back( Token( "string", "STRING", -1) );
 	tokenLexicon.push_back( Token( "print", "PRINT", -1) );
 	tokenLexicon.push_back( Token( "scanf", "SCANF", -1) );
+	tokenLexicon.push_back(Token("endif", "ENDIF", -1));
+	tokenLexicon.push_back(Token("given", "GIVEN", -1));
+	tokenLexicon.push_back(Token("endgiven", "ENDGIVEN", -1));
+	tokenLexicon.push_back(Token("repeat", "REPEAT", -1));
+	tokenLexicon.push_back(Token("endrepeat", "ENDREPEAT", -1));
+	tokenLexicon.push_back(Token("then", "THEN", -1));
+	tokenLexicon.push_back(Token("until", "UNTIL", -1));
+	tokenLexicon.push_back(Token("endwhile", "ENDWHILE", -1));
 	tokenLexicon.push_back( Token( "+", "PLUS", -1) );
 	tokenLexicon.push_back( Token( "-", "MINUS", -1) );
 	tokenLexicon.push_back( Token( "*", "MULTI", -1) );
@@ -398,14 +407,7 @@ void Lexer::initiateLexicon(){
 	//tokenLexicon.push_back( Token( ".", "", -1) );
 	//tokenLexicon.push_back( Token( "", "", -1) );
 	//newly added to the change in SynSemantic Analysis
-	tokenLexicon.push_back( Token( "endif", "ENDIF", -1) );
-	tokenLexicon.push_back( Token( "given", "GIVEN", -1) );
-	tokenLexicon.push_back( Token( "endgiven", "ENDGIVEN", -1) );
-	tokenLexicon.push_back( Token( "repeat", "REPEAT", -1) );
-	tokenLexicon.push_back( Token( "endrepeat", "ENDREPEAT", -1) );
-	tokenLexicon.push_back(Token("then", "THEN", -1));
-	tokenLexicon.push_back(Token("until", "UNTIL", -1));
-	tokenLexicon.push_back(Token("endwhile", "ENDWHILE", -1));
+	
 
 	tokenLexicon.push_back(Token("#", "#", -1));
 	tokenLexicon.push_back(Token("", "VOID", -1));
