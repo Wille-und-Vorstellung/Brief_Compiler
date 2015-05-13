@@ -48,7 +48,8 @@ vector<char> BriefCompiler::readSource(string fileName){
 	}
 	vector<char> sourceString;
 	char temp;
-	while ( source >> temp ) {
+	
+	while ( source.get(temp) ) {
 		sourceString.push_back(temp);
 	}
 	return sourceString;
