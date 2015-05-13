@@ -284,6 +284,11 @@ vector<Token> SynSemantic::firstAUX( Token x ){////waiting for sequential inspec
 	}
 	else;
 #endif
+	if (x.classMarco == "S"){//ad-hoc I know, it's a grammar-sensitive optimization.
+		vector<Token> temp = firstAUX(Token("", "I", -1));
+		firstSet[indexInSIL(Token("", "S", -1))] = temp;
+		return temp;
+	}
 	vector<Token> firstSetTemp;
 	firstSetTemp.clear();
 	bool extensionFlag;
@@ -740,12 +745,13 @@ void SynSemantic::constructAugmentedGrammar(){//////////////////////////////////
 	augmentedGrammar.push_back(LRItem(0, Token("", "S'", -1), tempR, Token("", "", -1), 0));
 
 	tempR.clear();
+	tempR.push_back(Token("", "S", -1));
 	tempR.push_back(Token("", "I", -1));
 	tempR.push_back(Token("", "SEP01", -1));
 	augmentedGrammar.push_back(LRItem(0, Token("", "S", -1), tempR, Token("", "", -1), 0));
 
 	tempR.clear();
-	tempR.push_back(Token("", "VOID", -1));
+	tempR.push_back(Token("", "I", -1));
 	augmentedGrammar.push_back(LRItem(0, Token("", "S", -1), tempR, Token("", "", -1), 0));
 
 	tempR.clear();
@@ -826,6 +832,10 @@ void SynSemantic::constructAugmentedGrammar(){//////////////////////////////////
 
 	tempR.clear();
 	tempR.push_back(Token("", "STRINGC", -1));
+	augmentedGrammar.push_back(LRItem(0, Token("", "E", -1), tempR, Token("", "", -1), 0));
+
+	tempR.clear();
+	tempR.push_back(Token("", "BOOLC", -1));
 	augmentedGrammar.push_back(LRItem(0, Token("", "E", -1), tempR, Token("", "", -1), 0));
 
 	tempR.clear();
@@ -1096,9 +1106,9 @@ void SynSemantic::setTerminator( vector<Token> tokenLexicon){//
 #endif
 }
 
-void SynSemantic::manualSpecifyFirstSets(){//manually specify the first of B to speed up the whole system
-	firstB.clear();						//ad-hoc I know, I hate it too bro! 
-	firstK.clear();						//but I really ain't get much choice right now
+void SynSemantic::manualSpecifyFirstSets(){	//manually specify the first of B to speed up the whole system
+	firstB.clear();		      				//ad-hoc I know, I hate it too bro! 
+	firstK.clear();							//but I really ain't get much choice right now
 	firstE.clear();
 	firstLIST.clear();
 	firstF.clear();
@@ -1118,6 +1128,7 @@ void SynSemantic::manualSpecifyFirstSets(){//manually specify the first of B to 
 	firstE.push_back(Token("", "INTC", -1));
 	firstE.push_back(Token("", "REALC", -1));
 	firstE.push_back(Token("", "STRINGC", -1));
+	firstE.push_back(Token("", "BOOLC", -1));
 	firstE.push_back(Token("", "SEP05", -1));
 	firstE.push_back(Token("", "ID", -1));
 
