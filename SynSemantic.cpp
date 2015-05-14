@@ -79,6 +79,7 @@ void SynSemantic::activate(vector<Token> lexerResult, vector<Token> tokenLexicon
 		//which table shall be selected. 
 		//an option: reconstruct LRanalyser, add an indicator to choose different table and stake
 		finishFlag = LRAnalyser( temp );
+		cout << "one input token finished: " << i <<endl;
 		if ( finishFlag )
 			break;
 	};
@@ -187,7 +188,7 @@ string SynSemantic::LRAnalyserAUX( vector<LRStakeEntry>& currentStake, long& sIn
 		}
 		//stage two: record reducer and execute semantic function
 		reducedLRItem.push_back(augmentedGrammar[tempTableItem.semanticActionID]);
-		semanticActionDispatcher(tempTableItem.semanticActionID);
+//		semanticActionDispatcher(tempTableItem.semanticActionID);
 		//stage three: push stake the left sid of the reducer
 		tempEntry.classMacro = augmentedGrammar[tempTableItem.semanticActionID].leftSide.classMarco;
 		row = currentStake[sIndex].state;
@@ -281,6 +282,9 @@ vector<Token> SynSemantic::firstAUX( Token x ){////waiting for sequential inspec
 	}
 	else if (x.classMarco == "LIST"){
 		return firstLIST;
+	}
+	else if (x.classMarco == "I"){
+		return firstI;
 	}
 	else;
 #endif
@@ -905,11 +909,11 @@ void SynSemantic::constructAugmentedGrammar(){//////////////////////////////////
 	tempR.push_back(Token("", "NOT", -1));
 	tempR.push_back(Token("", "B", -1));
 	augmentedGrammar.push_back(LRItem(0, Token("", "B", -1), tempR, Token("", "", -1), 0));
-
+	/*
 	tempR.clear();
 	tempR.push_back(Token("", "ID", -1));
 	augmentedGrammar.push_back(LRItem(0, Token("", "B", -1), tempR, Token("", "", -1), 0));
-
+	*/
 	tempR.clear();
 	tempR.push_back(Token("", "SEP05", -1));
 	tempR.push_back(Token("", "B", -1));
@@ -985,7 +989,9 @@ void SynSemantic::constructAugmentedGrammar(){//////////////////////////////////
 	augmentedGrammar.push_back(LRItem(0, Token("", "J", -1), tempR, Token("", "", -1), 0));
 
 	tempR.clear();
+	tempR.push_back(Token("", "SEP05", -1));
 	tempR.push_back(Token("", "B", -1));
+	tempR.push_back(Token("", "SEP06", -1));
 	augmentedGrammar.push_back(LRItem(0, Token("", "J", -1), tempR, Token("", "", -1), 0));
 
 	tempR.clear();
@@ -1114,6 +1120,7 @@ void SynSemantic::manualSpecifyFirstSets(){	//manually specify the first of B to
 	firstF.clear();
 	firstLEFT.clear();
 	firstP.clear();
+	firstI.clear();
 
 	firstLIST.push_back(Token("", "ID", -1));
 
@@ -1150,6 +1157,16 @@ void SynSemantic::manualSpecifyFirstSets(){	//manually specify the first of B to
 	firstB.push_back(Token("", "REALC", -1));
 	firstB.push_back(Token("", "STRINGC", -1));
 
+	firstI.push_back(Token("", "INT", -1));
+	firstI.push_back(Token("", "FLOAT", -1));
+	firstI.push_back(Token("", "STRING", -1));
+	firstI.push_back(Token("", "BOOL", -1));
+	firstI.push_back(Token("", "ID", -1));
+	firstI.push_back(Token("", "IF", -1));
+	firstI.push_back(Token("", "GIVEN", -1));
+	firstI.push_back(Token("", "REPEAT", -1));
+	firstI.push_back(Token("", "WHILE", -1));
+
 	//update to firstSet
 	Token temp("", "", -1);
 	temp.classMarco = "B";
@@ -1166,6 +1183,8 @@ void SynSemantic::manualSpecifyFirstSets(){	//manually specify the first of B to
 	firstSet[indexInSIL(temp)] = firstLEFT;
 	temp.classMarco = "LIST";
 	firstSet[indexInSIL(temp)] = firstLIST;
+	temp.classMarco = "I";
+	firstSet[indexInSIL(temp)] = firstI;
 	return;
 }
 
