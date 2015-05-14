@@ -87,6 +87,7 @@ void SynSemantic::activate(vector<Token> lexerResult, vector<Token> tokenLexicon
 	if ( !finishFlag || (finishFlag && tokenSequence.size()-1 != readerIndex ) ){
 		cerr << "error occured during LR(1) analysis, the result is corrupted." << endl;
 	}
+	LRStake;
 	showProducer();
 	getchar();
 	showAddressCode();
@@ -746,6 +747,7 @@ void SynSemantic::constructAugmentedGrammar(){//////////////////////////////////
 #ifdef RELEASE
 	tempR.clear();
 	tempR.push_back(Token("", "S", -1));
+	tempR.push_back(Token("", "#", -1));
 	augmentedGrammar.push_back(LRItem(0, Token("", "S'", -1), tempR, Token("", "", -1), 0));
 
 	tempR.clear();
@@ -756,6 +758,7 @@ void SynSemantic::constructAugmentedGrammar(){//////////////////////////////////
 
 	tempR.clear();
 	tempR.push_back(Token("", "I", -1));
+	tempR.push_back(Token("", "SEP01", -1));
 	augmentedGrammar.push_back(LRItem(0, Token("", "S", -1), tempR, Token("", "", -1), 0));
 
 	tempR.clear();

@@ -1,46 +1,16 @@
-﻿Build started 2015/5/14 15:09:39.
+﻿Build started 2015/5/14 16:27:36.
      1>Project "D:\ProgrammingProjects\VisualStudio2013\Brief_Compiler_00\Brief_Compiler_00\Brief_Compiler_00.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
-         F:\MicrosoftVisualStudio\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yu"stdafx.h" /Fp"Debug\Brief_Compiler_00.pch" /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt SynSemantic.cpp
-         SynSemantic.cpp
-     1>d:\programmingprojects\visualstudio2013\brief_compiler_00\brief_compiler_00\synsemantic.cpp(26): warning C4018: '<' : signed/unsigned mismatch
-     1>d:\programmingprojects\visualstudio2013\brief_compiler_00\brief_compiler_00\synsemantic.cpp(34): warning C4018: '<' : signed/unsigned mismatch
-     1>d:\programmingprojects\visualstudio2013\brief_compiler_00\brief_compiler_00\synsemantic.cpp(47): warning C4018: '<' : signed/unsigned mismatch
-     1>d:\programmingprojects\visualstudio2013\brief_compiler_00\brief_compiler_00\synsemantic.cpp(75): warning C4018: '<' : signed/unsigned mismatch
-     1>d:\programmingprojects\visualstudio2013\brief_compiler_00\brief_compiler_00\synsemantic.cpp(236): warning C4018: '<' : signed/unsigned mismatch
-     1>d:\programmingprojects\visualstudio2013\brief_compiler_00\brief_compiler_00\synsemantic.cpp(314): warning C4018: '<' : signed/unsigned mismatch
-     1>d:\programmingprojects\visualstudio2013\brief_compiler_00\brief_compiler_00\synsemantic.cpp(318): warning C4018: '<' : signed/unsigned mismatch
-     1>d:\programmingprojects\visualstudio2013\brief_compiler_00\brief_compiler_00\synsemantic.cpp(298): warning C4101: 'extensionFlag' : unreferenced local variable
-     1>d:\programmingprojects\visualstudio2013\brief_compiler_00\brief_compiler_00\synsemantic.cpp(357): warning C4018: '<' : signed/unsigned mismatch
-     1>d:\programmingprojects\visualstudio2013\brief_compiler_00\brief_compiler_00\synsemantic.cpp(358): warning C4018: '<=' : signed/unsigned mismatch
-     1>d:\programmingprojects\visualstudio2013\brief_compiler_00\brief_compiler_00\synsemantic.cpp(369): warning C4018: '<' : signed/unsigned mismatch
-     1>d:\programmingprojects\visualstudio2013\brief_compiler_00\brief_compiler_00\synsemantic.cpp(375): warning C4018: '<' : signed/unsigned mismatch
-     1>d:\programmingprojects\visualstudio2013\brief_compiler_00\brief_compiler_00\synsemantic.cpp(377): warning C4018: '<' : signed/unsigned mismatch
-     1>d:\programmingprojects\visualstudio2013\brief_compiler_00\brief_compiler_00\synsemantic.cpp(384): warning C4018: '<' : signed/unsigned mismatch
-     1>d:\programmingprojects\visualstudio2013\brief_compiler_00\brief_compiler_00\synsemantic.cpp(395): warning C4018: '<=' : signed/unsigned mismatch
-     1>d:\programmingprojects\visualstudio2013\brief_compiler_00\brief_compiler_00\synsemantic.cpp(413): warning C4018: '<' : signed/unsigned mismatch
-     1>d:\programmingprojects\visualstudio2013\brief_compiler_00\brief_compiler_00\synsemantic.cpp(414): warning C4018: '<' : signed/unsigned mismatch
-     1>d:\programmingprojects\visualstudio2013\brief_compiler_00\brief_compiler_00\synsemantic.cpp(441): warning C4018: '<' : signed/unsigned mismatch
-     1>d:\programmingprojects\visualstudio2013\brief_compiler_00\brief_compiler_00\synsemantic.cpp(482): warning C4018: '<' : signed/unsigned mismatch
-     1>d:\programmingprojects\visualstudio2013\brief_compiler_00\brief_compiler_00\synsemantic.cpp(486): warning C4018: '<' : signed/unsigned mismatch
-     1>d:\programmingprojects\visualstudio2013\brief_compiler_00\brief_compiler_00\synsemantic.cpp(493): warning C4018: '<' : signed/unsigned mismatch
-     1>d:\programmingprojects\visualstudio2013\brief_compiler_00\brief_compiler_00\synsemantic.cpp(496): warning C4018: '<' : signed/unsigned mismatch
-     1>d:\programmingprojects\visualstudio2013\brief_compiler_00\brief_compiler_00\synsemantic.cpp(502): warning C4018: '<' : signed/unsigned mismatch
-     1>d:\programmingprojects\visualstudio2013\brief_compiler_00\brief_compiler_00\synsemantic.cpp(505): warning C4018: '<' : signed/unsigned mismatch
-     1>d:\programmingprojects\visualstudio2013\brief_compiler_00\brief_compiler_00\synsemantic.cpp(507): warning C4018: '<' : signed/unsigned mismatch
-     1>d:\programmingprojects\visualstudio2013\brief_compiler_00\brief_compiler_00\synsemantic.cpp(539): warning C4018: '<' : signed/unsigned mismatch
-     1>d:\programmingprojects\visualstudio2013\brief_compiler_00\brief_compiler_00\synsemantic.cpp(541): warning C4018: '<' : signed/unsigned mismatch
-     1>d:\programmingprojects\visualstudio2013\brief_compiler_00\brief_compiler_00\synsemantic.cpp(559): warning C4018: '<' : signed/unsigned mismatch
-     1>d:\programmingprojects\visualstudio2013\brief_compiler_00\brief_compiler_00\synsemantic.cpp(563): warning C4018: '<' : signed/unsigned mismatch
-     1>d:\programmingprojects\visualstudio2013\brief_compiler_00\brief_compiler_00\synsemantic.cpp(632): warning C4018: '<' : signed/unsigned mismatch
-     1>d:\programmingprojects\visualstudio2013\brief_compiler_00\brief_compiler_00\synsemantic.cpp(682): warning C4018: '<' : signed/unsigned mismatch
-     1>d:\programmingprojects\visualstudio2013\brief_compiler_00\brief_compiler_00\synsemantic.cpp(699): warning C4018: '<' : signed/unsigned mismatch
-     1>d:\programmingprojects\visualstudio2013\brief_compiler_00\brief_compiler_00\synsemantic.cpp(716): warning C4018: '<' : signed/unsigned mismatch
-     1>d:\programmingprojects\visualstudio2013\brief_compiler_00\brief_compiler_00\synsemantic.cpp(726): warning C4018: '<' : signed/unsigned mismatch
-     1>d:\programmingprojects\visualstudio2013\brief_compiler_00\brief_compiler_00\synsemantic.cpp(732): warning C4018: '<' : signed/unsigned mismatch
-     1>d:\programmingprojects\visualstudio2013\brief_compiler_00\brief_compiler_00\synsemantic.cpp(1213): warning C4018: '<' : signed/unsigned mismatch
-     1>d:\programmingprojects\visualstudio2013\brief_compiler_00\brief_compiler_00\synsemantic.cpp(1215): warning C4018: '<' : signed/unsigned mismatch
-     1>d:\programmingprojects\visualstudio2013\brief_compiler_00\brief_compiler_00\synsemantic.cpp(1224): warning C4018: '<' : signed/unsigned mismatch
+         F:\MicrosoftVisualStudio\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yu"stdafx.h" /Fp"Debug\Brief_Compiler_00.pch" /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt Lexer.cpp
+         Lexer.cpp
+     1>d:\programmingprojects\visualstudio2013\brief_compiler_00\brief_compiler_00\lexer.cpp(143): warning C4018: '<' : signed/unsigned mismatch
+     1>d:\programmingprojects\visualstudio2013\brief_compiler_00\brief_compiler_00\lexer.cpp(174): warning C4018: '<' : signed/unsigned mismatch
+     1>d:\programmingprojects\visualstudio2013\brief_compiler_00\brief_compiler_00\lexer.cpp(179): warning C4018: '>=' : signed/unsigned mismatch
+     1>d:\programmingprojects\visualstudio2013\brief_compiler_00\brief_compiler_00\lexer.cpp(196): warning C4018: '<' : signed/unsigned mismatch
+     1>d:\programmingprojects\visualstudio2013\brief_compiler_00\brief_compiler_00\lexer.cpp(201): warning C4018: '<' : signed/unsigned mismatch
+     1>d:\programmingprojects\visualstudio2013\brief_compiler_00\brief_compiler_00\lexer.cpp(203): warning C4018: '<' : signed/unsigned mismatch
+     1>d:\programmingprojects\visualstudio2013\brief_compiler_00\brief_compiler_00\lexer.cpp(316): warning C4018: '<' : signed/unsigned mismatch
+     1>d:\programmingprojects\visualstudio2013\brief_compiler_00\brief_compiler_00\lexer.cpp(336): warning C4018: '>=' : signed/unsigned mismatch
        Link:
          F:\MicrosoftVisualStudio\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"D:\ProgrammingProjects\VisualStudio2013\Brief_Compiler_00\Debug\Brief_Compiler_00.exe" /INCREMENTAL /NOLOGO opencv_core246d.lib opencv_highgui246d.lib opencv_video246d.lib opencv_ml246d.lib opencv_legacy246d.lib opencv_imgproc246d.lib opencv_flann246d.lib opencv_features2d246d.lib opencv_calib3d246d.lib opencv_objdetect246d.lib opencv_contrib246d.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:\ProgrammingProjects\VisualStudio2013\Brief_Compiler_00\Debug\Brief_Compiler_00.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:\ProgrammingProjects\VisualStudio2013\Brief_Compiler_00\Debug\Brief_Compiler_00.lib" /MACHINE:X86 Debug\AnalysisTableItem.obj
          Debug\BriefCompiler.obj
@@ -57,4 +27,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:02.79
+Time Elapsed 00:00:01.13

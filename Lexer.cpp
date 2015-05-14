@@ -1,7 +1,7 @@
 #pragma once
 #include "stdafx.h"
 #include"Lexer.hpp"
-#define RESERVED_WORD_RANGE 24
+#define RESERVED_WORD_RANGE 25
 
 void Lexer::activate( SOURCE_STRING sourceInput){
 	//check input
@@ -349,13 +349,15 @@ bool Lexer::isRelevant( char ichar){
 			ichar == '+' || ichar == '-' || ichar == '*' || ichar == '/' || ichar == '=' ||
 			ichar == '!' || ichar == '>' || ichar == '<' || ichar == '&' || ichar == '|' ||
 			ichar == ';' || ichar == ',' || ichar == '{' || ichar == '}' || ichar == '(' || 
-			ichar == ')' || ichar == '[' || ichar == ']' || ichar == '.' || ichar == '\"' ){
+			ichar == ')' || ichar == '[' || ichar == ']' || ichar == '.' || ichar == '\"' || 
+			ichar == '#'){
 		return true;
 	}
 	return false;
 }
 
 void Lexer::initiateLexicon(){
+	tokenLexicon.push_back(Token("#", "#", -1));
 	tokenLexicon.push_back(Token("", "INTC", -1));
 	tokenLexicon.push_back(Token("", "REALC", -1));
 	tokenLexicon.push_back(Token("", "STRINGC", -1));
@@ -409,7 +411,6 @@ void Lexer::initiateLexicon(){
 	//newly added to the change in SynSemantic Analysis
 	
 
-	tokenLexicon.push_back(Token("#", "#", -1));
 	tokenLexicon.push_back(Token("", "VOID", -1));
 	tokenLexicon.push_back(Token("", "ID", -1));
 };
