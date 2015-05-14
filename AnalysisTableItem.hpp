@@ -1,3 +1,4 @@
+#pragma once
 #include "stdafx.h"
 #include <iostream>
 #include <vector>
@@ -16,12 +17,14 @@ using std::vector;
  *	   and accept(i.e. sentence recognition complete) respectively
  *	4. semanticActionID, which is valid only when actionType == R, 
  *	   coresponds to the semanticActionID in class LRItem
- *	5. 
+ *	5. semanticActionID = actionNumber
+ *  6. stateNumber = net state
  */
 
 class AnalysisTableItem{
 public:
 	string actionType;
+	long stateNumber;
 	long semanticActionID;
 
 	AnalysisTableItem():semanticActionID(-1){};
@@ -31,8 +34,4 @@ private:
 
 };
 
-//implements
-AnalysisTableItem::AnalysisTableItem( const AnalysisTableItem& a ){
-	actionType = a.actionType;
-	semanticActionID = a.semanticActionID;
-};
+

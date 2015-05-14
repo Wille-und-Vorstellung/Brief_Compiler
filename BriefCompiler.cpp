@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include"BriefCompiler.hpp"
 #define MAXIMUM_FILE_LENGTH 30
+#define TEST_ONLY
 
 //--------------------------Lex analysis part
 void BriefCompiler::activateCompiler( string fileName ){
@@ -9,9 +10,17 @@ void BriefCompiler::activateCompiler( string fileName ){
 	//error-check
 	TOKEN_SEQUENCE lexerResult;
 	lexerResult = activateLexer( inputString );
+#ifdef TEST_ONLY
+	cout << "the Lexer output:" << endl;
+	for (unsigned int i = 0; i < lexerResult.size(); i++){
+		cout << "< " << lexerResult[i].classMarco << ", " << lexerResult[i].tableIndex << " >" << endl;
+	}
+	cout << "------------------------" << endl;
+#endif
 	//error-check
 	OBJECT_CODE_SEQUENCE SSResult;
 	SSResult = activateSynSemantic( lexerResult );
+	objectCode = SSResult;
 	//error-check
 	//...
 	return;
@@ -39,7 +48,8 @@ vector<char> BriefCompiler::readSource(string fileName){
 	}
 	vector<char> sourceString;
 	char temp;
-	while ( source >> temp ) {
+	
+	while ( source.get(temp) ) {
 		sourceString.push_back(temp);
 	}
 	return sourceString;
@@ -58,9 +68,17 @@ const BriefCompiler::OBJECT_CODE_SEQUENCE BriefCompiler::getObjectCode(){
 
 BriefCompiler::OBJECT_CODE_SEQUENCE BriefCompiler::activateSynSemantic( BriefCompiler::TOKEN_SEQUENCE inputTokenSequence ){
 	BriefCompiler::OBJECT_CODE_SEQUENCE temp;
-	SSAnalyser.activate( inputTokenSequence );
-	temp = SSAnalyser.getResult();
+	SSAnalyser.activate( inputTokenSequence, LexAnalyser.getTokenLexicon() );
+	temp = SSAnalyser.getObjectCode();
 	//error-check
 	objectCode = temp;
 	return objectCode;
+};
+
+const vector<LRItem> BriefCompiler::getReducedLRItem(){
+	return SSAnalyser.getReducedLRItem();
+};
+
+const vector<long> BriefCompiler::getSSErrorRecord(){
+	return SSAnalyser.getErrorRecord();
 };

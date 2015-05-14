@@ -1,3 +1,4 @@
+#pragma once
 #include"stdafx.h"
 
 /*
@@ -29,17 +30,9 @@ public:
 		classMarco = input.classMarco;
 		tableIndex = input.tableIndex;
 	};
-	~Token(){
-	};
+	~Token();
 private:
 
 };
 
 
-//implements
-Token& Token::operator= ( const Token & a ){
-	attribute = a.attribute;
-	classMarco = a.classMarco;
-	tableIndex = a.tableIndex;
-	return *this;
-};
